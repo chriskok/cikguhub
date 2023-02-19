@@ -21,6 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('recsys/', include(('recsys.urls', 'recsys'), namespace='recsys')),
     path('report/', include(('report.urls', 'report'), namespace='report')),
-    path("", TemplateView.as_view(template_name='index.html'),
+    path("", TemplateView.as_view(template_name='home.html'),
         name='home'),
 ]
