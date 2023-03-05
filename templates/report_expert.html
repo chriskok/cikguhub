@@ -8,8 +8,20 @@
 
     <div class="jumbotron">
         <div class="container">
-            <h1 class="display-3">Competency Report</h1>
-            <p></p>
+            <h1 class="display-3">Report: {{ curr_user.username }}</h1>
+            
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Switch User
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    {% for u in all_users %}
+                    <a class="dropdown-item" href="{% url 'report:expert_report' u.id %}">{{u.username}}</a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <br>
             <p>Name: {{ learner_model.full_name }}</p>
             <p>School Level: {{ learner_model.school_level }}</p>
             <p>Years of Experience: {{ learner_model.years_of_experience }}</p>
@@ -23,11 +35,11 @@
         <div class="row">
             <div class="col-sm col-md-6">
                 <h3>Competencies</h3>
-                <p>Planner: {{ planner_score }}</p>
-                <p>Guardian: {{ guardian_score }}</p>
-                <p>Mentor: {{ mentor_score }}</p>
-                <p>Motivator: {{ motivator_score }}</p>
-                <p>Assessor: {{ assessor_score }}</p>
+                <p>Planner: {{ learner_model.planner_score|floatformat:"0" }}</p>
+                <p>Guardian: {{ learner_model.guardian_score|floatformat:"0" }}</p>
+                <p>Mentor: {{ learner_model.mentor_score|floatformat:"0" }}</p>
+                <p>Motivator: {{ learner_model.motivator_score|floatformat:"0" }}</p>
+                <p>Assessor: {{ learner_model.assessor_score|floatformat:"0" }}</p>
             </div>
             <div class="col-sm col-md-6">
                 <h3>Feedback</h3>
