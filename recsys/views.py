@@ -16,7 +16,10 @@ def user_recs(request):
 
     return render(request, "recs.html", context=context)
 
-def expert_recs(request):
-    recommended_modules = Module.objects.filter(id__in=json.loads(RecommendationQueue.objects.get(user=request.user).list_of_module_ids))
-    context = {"module": recommended_modules}
+def expert_recs(request, user_id):
+    if (user_id == 0): curr_user = User.objects.first()
+    else: curr_user = User.objects.get(pk=user_id)
+
+    recommended_modules = Module.objects.filter(id__in=json.loads(RecommendationQueue.objects.get(user=curr_user).list_of_module_ids))
+    context = {"module": recommended_modules, "curr_user": curr_user, "all_users": User.objects.all()}
     return render(request, "recs_expert.html", context=context)

@@ -9,13 +9,20 @@
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
         <div class="container">
-            <h1 class="display-3">Recommendation System</h1>
+            <h1 class="display-3">Recommendations for {{ curr_user }}</h1>
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Switch User
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    {% for u in all_users %}
+                    <a class="dropdown-item" href="{% url 'recsys:expert_recs' u.id %}">{{u.username}}</a>
+                    {% endfor %}
+                </div>
+              </div>
             <br>
-            <div class="embed-responsive embed-responsive-16by9">
-                <iframe class="embed-responsive-item" width="560" height="315" src="https://www.youtube.com/embed/is5MVZeiju8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-            </div>
-            <br>
-            <p>TBD</p>
+
+
         </div>
     </div>
 
