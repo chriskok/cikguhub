@@ -3,6 +3,7 @@
 {% block title %} CikguHub - Report {% endblock %}
 
 {% block content %}
+{% load report_extras %}
 
 <main role="main">
 
@@ -27,7 +28,44 @@
             <p>Years of Experience: {{ learner_model.years_of_experience }}</p>
             <p>Role: {{ learner_model.role }}</p>
             <p>Skill Interests: {{ learner_model.skill_interests }}</p>
-            <p>Additional Interests: {{ learner_model.other_interests }}</p>
+            <p>Additional Interests: {% if learner_model.other_interests %}{{ learner_model.other_interests }}{% else %}N/A{% endif %}</p>
+            <p>Completed Modules: {{ completed_modules.count }}</p>
+
+            {% if completed_modules.count > 0 %}
+            <p>
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                    Completed Module Details
+                </button>
+            </p>
+            <div class="collapse" id="collapseExample">
+                {% for m in completed_modules %}
+                <div class="card mb-2">
+                    <h5 class="card-header">{{ m.module.title }}</h5>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm col-md-3">
+                                <div class="embed-responsive embed-responsive-16by9">
+                                    <iframe class="embed-responsive-item" src="{{ m.module.video.url }}" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                            <div class="col-sm col-md-8">
+                                <ul>
+                                    {% for q in m.module.questions.all %}
+                                    <li>{{ q.question }}</li>
+                                    <ul>
+                                        <li>{{ q.answertovideoquestion_set | by_user:curr_user | get_first_answer }}</li>
+                                    </ul>
+                                    {% endfor %}
+                                </ul>
+                                <br>
+                                <p>Time Spent (seconds): {{ m.time_spent }} </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}{% endif %}
         </div>
     </div>
 
