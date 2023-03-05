@@ -9,12 +9,24 @@
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
         <div class="container">
-            <h1 class="display-3">Competency Report</h1>
-            <p>TBD</p>
+            <h1 class="display-3">Report: {{ learner_model.full_name }}</h1>
         </div>
     </div>
 
-<footer class="container">
-    <p>&copy; CikguHub 2023</p>
-</footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm col-md-6">
+                <h3>Competencies</h3>
+                <p>Planner: {{ planner_score }}</p>
+                <p>Guardian: {{ guardian_score }}</p>
+                <p>Mentor: {{ mentor_score }}</p>
+                <p>Motivator: {{ motivator_score }}</p>
+                <p>Assessor: {{ assessor_score }}</p>
+            </div>
+            <div class="col-sm col-md-6">
+                <h3>Feedback</h3>
+                <p>{{ learner_model.feedback }}</p>
+            </div>
+        </div>
+    </div>
 {% endblock %}
