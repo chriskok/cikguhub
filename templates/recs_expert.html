@@ -22,6 +22,29 @@
               </div>
             <br>
 
+            {% for m in modules %}
+            <div class="card mb-2">
+                
+                <h5 class="card-header">{{ m.title }}</h5>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm col-md-3">
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <iframe class="embed-responsive-item" src="{{ m.video.url }}" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                        <div class="col-sm col-md-8">
+                            {% for q in m.questions.all %}
+                            <li>{{ q.question }}</li>
+                            {% endfor %}
+                        </div>
+                        <div class="col-sm col-md-1">
+                            <a href="#" class="btn btn-primary">Edit</a>
+                        </div>
+                    </div>
+                </div>
+              </div>
+            {% endfor %}
 
         </div>
     </div>
