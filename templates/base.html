@@ -36,12 +36,34 @@
                 <li class="nav-item active">
                     <a class="nav-link" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
                 </li>
+
+                {% if user.is_superuser %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="recsysMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Recommendation System
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="recsysMenu">
+                        <a class="dropdown-item" href="{% url 'recsys:index' %}">User</a>
+                        <a class="dropdown-item" href="{% url 'recsys:index' %}">Expert</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="reportMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Report Generation
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="reportMenu">
+                        <a class="dropdown-item" href="{% url 'report:index' %}">User</a>
+                        <a class="dropdown-item" href="{% url 'report:index' %}">Expert</a>
+                    </div>
+                </li>
+                {% else %}
                 <li class="nav-item">
                   <a class="nav-link" href="{% url 'recsys:index' %}">Recommendation System</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="{% url 'report:index' %}">Report Generation</a>
                 </li>
+                {% endif %}
                 <li class="nav-item">
                   <a class="nav-link" href="{% url 'main:logout' %}">Logout</a>
                 </li>
@@ -57,10 +79,6 @@
           
                 {% endif %}
             </ul>
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
         </div>
     </nav>
 
