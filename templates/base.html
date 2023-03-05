@@ -56,12 +56,15 @@
                         <a class="dropdown-item" href="{% url 'report:expert_report' %}">Expert</a>
                     </div>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
+                </li>
                 {% else %}
                 <li class="nav-item">
-                  <a class="nav-link" href="{% url 'recsys:index' %}">Recommendation System</a>
+                  <a class="nav-link" href="{% url 'recsys:user_recs' %}">Recommendation System</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{% url 'report:index' %}">Report Generation</a>
+                  <a class="nav-link" href="{% url 'report:user_report' %}">Report Generation</a>
                 </li>
                 {% endif %}
                 <li class="nav-item">
