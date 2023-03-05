@@ -9,44 +9,47 @@
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron">
         <div class="container">
+            
             <h1 class="display-3">Recommendations for {{ curr_user }}</h1>
             <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Switch User
+                Switch User
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     {% for u in all_users %}
                     <a class="dropdown-item" href="{% url 'recsys:expert_recs' u.id %}">{{u.username}}</a>
                     {% endfor %}
                 </div>
-              </div>
-            <br>
-
-            {% for m in modules %}
-            <div class="card mb-2">
-                
-                <h5 class="card-header">{{ m.title }}</h5>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm col-md-3">
-                            <div class="embed-responsive embed-responsive-16by9">
-                                <iframe class="embed-responsive-item" src="{{ m.video.url }}" allowfullscreen></iframe>
-                            </div>
-                        </div>
-                        <div class="col-sm col-md-8">
-                            {% for q in m.questions.all %}
-                            <li>{{ q.question }}</li>
-                            {% endfor %}
-                        </div>
-                        <div class="col-sm col-md-1">
-                            <a href="#" class="btn btn-primary">Edit</a>
-                        </div>
-                    </div>
-                </div>
-              </div>
-            {% endfor %}
+            </div>
 
         </div>
+    </div>
+    <div class="container">
+
+        {% for m in modules %}
+        <div class="card mb-2">
+            
+            <h5 class="card-header">{{ m.title }}</h5>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm col-md-3">
+                        <div class="embed-responsive embed-responsive-16by9">
+                            <iframe class="embed-responsive-item" src="{{ m.video.url }}" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    <div class="col-sm col-md-8">
+                        {% for q in m.questions.all %}
+                        <li>{{ q.question }}</li>
+                        {% endfor %}
+                    </div>
+                    <div class="col-sm col-md-1">
+                        <a href="#" class="btn btn-primary">Edit</a>
+                    </div>
+                </div>
+            </div>
+          </div>
+        {% endfor %}
+
     </div>
 
 <footer class="container">
