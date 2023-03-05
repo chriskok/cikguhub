@@ -9,8 +9,16 @@
 ## Setup 
 - `python manage.py makemigrations`
 - `python manage.py migrate`
-- `python manage.py createsuperuser`
-- temporarily using user: 'admin', pass: 'cikgupass'
+- `python manage.py loaddata db.json`
+<!-- - `python manage.py createsuperuser` -->
 
 ## Running the Application
 - `python manage.py runserver`
+- temporarily using user: 'admin', pass: 'cikgupass'
+
+## Dumping and Loading Data
+#### Dumping
+- `python manage.py dumpdata > db.json`
+#### Loading
+- `python manage.py migrate`
+- `python manage.py loaddata db.json`
