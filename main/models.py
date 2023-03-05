@@ -37,14 +37,23 @@ class VideoQuestion(models.Model):
     def __str__(self):
         return "{}: {}".format(self.video, self.question)
 
-class VideoCompletion(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+class Module(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
-    watchtime = models.FloatField(null=True, blank=True, default=0.0)
+    questions = models.ManyToManyField(VideoQuestion)
+    title = models.CharField(max_length=4096, null=True, blank=True)
+
+    def __str__(self):
+        module_name = self.title if self.title else str(self.id)
+        return "{}".format(module_name)
+
+class ModuleCompletion(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    module = models.ForeignKey(Module, on_delete=models.CASCADE)
+    time_spent = models.FloatField(null=True, blank=True, default=0.0)
     complete = models.BooleanField(default=False)
 
     def __str__(self):
-        return "{} finished {}".format(self.user, self.video)
+        return "{} finished {}".format(self.user, self.module.video)
 
 class AnswerToVideoQuestion(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
