@@ -9,7 +9,7 @@
 ## Setup 
 - `python manage.py makemigrations`
 - `python manage.py migrate`
-- `python manage.py loaddata db.json`
+- `python manage.py loaddata dump.json`
 <!-- - `python manage.py createsuperuser` -->
 
 ## Running the Application
@@ -18,7 +18,7 @@
 
 ## Dumping and Loading Data
 #### Dumping
-- `python manage.py dumpdata > db.json`
+- `python manage.py dumpdata > dump.json`
 #### Loading
 - `python manage.py migrate`
-- `python manage.py loaddata db.json`
+- `python manage.py loaddata dump.json`
