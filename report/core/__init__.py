@@ -1,4 +1,5 @@
 from .metrics import Metric
+from .descriptions import Description
 
 # Instantiate metrics
 metrics = {
