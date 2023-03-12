@@ -16,4 +16,5 @@ urlpatterns = [
     path("create_module", login_required(views.ModuleCreateView.as_view()), name= "create_module"),
 
     # Update
+    path("update_module/<pk>", login_required(views.ModuleUpdateView.as_view()), name= "update_module"),
 ]

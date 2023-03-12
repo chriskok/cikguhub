@@ -85,20 +85,18 @@ class ModuleCreateView(SuccessMessageMixin, CreateView):
     def get_success_url(self):
         return reverse_lazy('main:create_module')
     
+    
 ##########################################
 #                UPDATE                  #
 ##########################################
 
-# class VideoCreateView(SuccessMessageMixin, CreateView):
-#     model = Video
-#     template_name = 'video_create.html'
-#     fields = ['title', 'tags', 'description', 'url']
-#     success_message = 'Video question creation successful!'
+class ModuleUpdateView(SuccessMessageMixin, UpdateView):
+    model = Module
+    fields = ['video', 'questions', 'title']
+    template_name = 'module_update.html'
+    success_message = 'Module updated successfully!'
 
-#     def get_success_url(self):
-#         return reverse_lazy('main:create_video')
+    success_url ="/"
 
-# class ModuleUpdateView(UpdateView):
-#     model = Author
-#     fields = ['name']
-#     template_name_suffix = '_update_form'
+    # def get_success_url(self):
+    #     return reverse_lazy('main:create_module')
