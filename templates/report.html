@@ -6,56 +6,20 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-6">
-            <h2>Sliders</h2>
-            <form>
+            {% for id, value in metrics.items %}
+                <h2>{{ value.name }}</h2>
                 <div class="form-group">
-                    <label for="planner">Planner</label>
                     <div class="input-group">
-                        <input type="number" class="form-control" id="plannerLabel" value="0" readonly>
-                        <input type="range" class="form-control-range" id="planner" onchange="updateLabel('planner', 'plannerLabel');" min="0" max="100" value="0" readonly>
+                        <h3>{{ value.value }}</h3>
+                        <input type="range" class="form-control-range" id="planner" min="0" max="100" value="{{value.value}}" disabled>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="guardian">Guardian</label>
-                    <div class="input-group">
-                        <input type="number" class="form-control" id="guardianLabel" value="0" readonly>
-                        <input type="range" class="form-control-range" id="guardian" onchange="updateLabel('guardian', 'guardianLabel');" min="0" max="100" value="0" readonly>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="mentor">Mentor</label>
-                    <div class="input-group">
-                        <input type="number" class="form-control" id="mentorLabel" value="0" readonly>
-                        <input type="range" class="form-control-range" id="mentor" onchange="updateLabel('mentor', 'mentorLabel');" min="0" max="100" value="0" readonly>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="motivator">Motivator</label>
-                    <div class="input-group">
-                        <input type="number" class="form-control" id="motivatorLabel" value="0" readonly>
-                        <input type="range" class="form-control-range" id="motivator" onchange="updateLabel('motivator', 'motivatorLabel');" min="0" max="100" value="0" readonly>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="assessor">Assessor</label>
-                    <div class="input-group">
-                        <input type="number" class="form-control" id="assessorLabel" value="0" readonly>
-                        <input type="range" class="form-control-range" id="assessor" onchange="updateLabel('assessor', 'assessorLabel');" min="0" max="100" value="0" readonly>
-                    </div>
-                </div>
-            </form>
+            {% endfor %}
         </div>
         <div class="col-md-6">
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor lorem nec nisi blandit elementum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Suspendisse sed velit velit. Sed auctor dolor vel ex dictum, ac rhoncus neque iaculis. Curabitur euismod suscipit turpis, ut bibendum enim suscipit at. Sed vel erat eu nunc pretium sagittis. Aliquam sit amet tellus faucibus, fermentum orci eget, bibendum metus. Mauris vel ante sem. Sed non mi est. Nam a justo eu mauris rhoncus bibendum ut nec justo. Sed dapibus euismod sapien ut iaculis.</p>
         </div>
     </div>
 </div>
-<script>
-    function updateLabel(sliderId, labelId) {
-        var slider = document.getElementById(sliderId);
-        var label = document.getElementById(labelId);
-        label.value = slider.value;
-    }
-</script>
 
 {% endblock %}

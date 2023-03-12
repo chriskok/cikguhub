@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from main.models import *
 import datetime
-import core
+from . import core
 
 def index(request):
     return render(request, "report.html")
@@ -11,11 +11,15 @@ def user_report(request):
     curr_learner_model = LearnerModel.objects.get(user=request.user)
     context = {
         'learner_model': curr_learner_model,
-        'planner_score': int(curr_learner_model.planner_score),
-        'guardian_score': int(curr_learner_model.guardian_score),
-        'mentor_score': int(curr_learner_model.mentor_score),
-        'motivator_score': int(curr_learner_model.motivator_score),
-        'assessor_score': int(curr_learner_model.assessor_score),
+        'metrics': {
+            m: core.metrics[m].to_view(int(getattr(curr_learner_model, m + "_score")))
+            for m in core.metrics
+        }
+        #int(curr_learner_model.planner_score),
+        #'guardian_score': int(curr_learner_model.guardian_score),
+        #'mentor_score': int(curr_learner_model.mentor_score),
+        #'motivator_score': int(curr_learner_model.motivator_score),
+        #'assessor_score': int(curr_learner_model.assessor_score),
     }
     return render(request, "report.html", context)
 
