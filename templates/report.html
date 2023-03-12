@@ -8,6 +8,7 @@
         <div class="col-md-6">
             {% for id, value in metrics.items %}
                 <h2>{{ value.name }}</h2>
+                <img source="{{value.icon}}">
                 <div class="form-group">
                     <div class="input-group">
                         <h3>{{ value.value }}</h3>
