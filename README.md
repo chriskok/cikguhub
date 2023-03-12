@@ -17,7 +17,7 @@
 - `python manage.py runserver`
 - temporarily using user: 'admin', pass: 'cikgupass'
 - NOTE: if you're running the system locally, you'll need to set:
-    - environment variable: `set DEVELOPMENT_MODE=True`
+    - environment variable: `set DEVELOPMENT_MODE=True` or `export DEVELOPMENT_MODE=True` (on MacOS)
     - and run the app with: `python manage.py runserver --insecure`
 
 ## Dumping and Loading Data

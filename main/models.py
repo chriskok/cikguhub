@@ -1,6 +1,21 @@
 from django.db import models
 from django.contrib.auth.models import User
+    
+class Feedback(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    feedback = models.TextField(max_length=4096, null=True, blank=True)
+    human_approved = models.BooleanField(default=False)
+    human_edited = models.BooleanField(default=False)
 
+    planner_score = models.FloatField(default=0.0)
+    guardian_score = models.FloatField(default=0.0)
+    mentor_score = models.FloatField(default=0.0)
+    motivator_score = models.FloatField(default=0.0)
+    assessor_score = models.FloatField(default=0.0)
+
+    def __str__(self):
+        return "{}. {}".format(str(self.id), self.user)
+    
 class LearnerModel(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=1024, null=True, blank=True)
@@ -16,10 +31,7 @@ class LearnerModel(models.Model):
     motivator_score = models.FloatField(default=0.0)
     assessor_score = models.FloatField(default=0.0)
 
-    feedback = models.TextField(max_length=4096, null=True, blank=True)
-    human_approved = models.BooleanField(default=False)
-    human_edited = models.BooleanField(default=False)
-    feedback_edit_history = models.TextField(null=True, blank=True)
+    current_feedback = models.ForeignKey(Feedback, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return "{}".format(self.user)
@@ -27,6 +39,7 @@ class LearnerModel(models.Model):
 class Video(models.Model):
     title = models.CharField(max_length=4096)
     tags = models.CharField(max_length=4096, help_text = "comma-separated list of tags")
+    description = models.CharField(max_length=4096, default="")
     url = models.CharField(max_length=1024, unique=True)
 
     def __str__(self):
@@ -45,6 +58,8 @@ class Module(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
     questions = models.ManyToManyField(VideoQuestion)
     title = models.CharField(max_length=4096, null=True, blank=True)
+    feedback_rating = models.FloatField(default=0.0)
+    feedback = models.CharField(max_length=4096, null=True, blank=True)
 
     def __str__(self):
         module_name = self.title if self.title else str(self.id)
@@ -70,7 +85,7 @@ class AnswerToVideoQuestion(models.Model):
 
 class RecommendationQueue(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    list_of_module_ids = models.CharField(max_length=1024, null=True, blank=True)
+    list_of_module_ids = models.CharField(max_length=1024, null=True, blank=True) 
 
     def __str__(self):
         return "{}: {} ".format(self.user, self.list_of_module_ids)
