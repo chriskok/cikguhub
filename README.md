@@ -10,6 +10,8 @@
 - `python manage.py makemigrations`
 - `python manage.py migrate`
 - `python manage.py loaddata dump.json`
+- `export DEVELOPMENT_MODE=True`
+- `export DEBUG=True`
 <!-- - `python manage.py collectstatic` -->
 <!-- - `python manage.py createsuperuser` -->
 

@@ -49,7 +49,7 @@ class VideoQuestion(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
     question = models.CharField(max_length=4096)
     type = models.CharField(max_length=100)   # MCQ (multiple choice) or OEQ (open-ended)
-    possible_answers = models.CharField(max_length=4096, null=True, blank=True)
+    possible_answers = models.CharField(max_length=4096, null=True, blank=True, help_text = "Please leave blank if OEQ")
 
     def __str__(self):
         return "{}: {}".format(self.video, self.question)
