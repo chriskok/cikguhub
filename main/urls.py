@@ -13,6 +13,7 @@ urlpatterns = [
     # Create
     path("create_video", login_required(views.VideoCreateView.as_view()), name= "create_video"),
     path("create_video_question", login_required(views.VideoQuestionCreateView.as_view()), name= "create_video_question"),
+    path("create_module", login_required(views.ModuleCreateView.as_view()), name= "create_module"),
 
     # Update
 ]

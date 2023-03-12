@@ -58,8 +58,6 @@ class Module(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
     questions = models.ManyToManyField(VideoQuestion)
     title = models.CharField(max_length=4096, null=True, blank=True)
-    feedback_rating = models.FloatField(default=0.0)
-    feedback = models.CharField(max_length=4096, null=True, blank=True)
 
     def __str__(self):
         module_name = self.title if self.title else str(self.id)
@@ -70,10 +68,19 @@ class ModuleCompletion(models.Model):
     module = models.ForeignKey(Module, on_delete=models.CASCADE)
     time_spent = models.FloatField(null=True, blank=True, default=0.0)
     complete = models.BooleanField(default=False)
+    feedback_rating = models.FloatField(default=0.0, null=True, blank=True)
+    feedback = models.CharField(max_length=4096, null=True, blank=True)
 
     def __str__(self):
         return "{} finished {}".format(self.user, self.module.video)
 
+class Track(models.Model):
+    title = models.CharField(max_length=4096)
+    list_of_module_ids = models.CharField(max_length=1024, null=True, blank=True) 
+
+    def __str__(self):
+        return "{}: {} ".format(self.title, self.list_of_module_ids)
+    
 class AnswerToVideoQuestion(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
