@@ -10,11 +10,15 @@
 - `python manage.py makemigrations`
 - `python manage.py migrate`
 - `python manage.py loaddata dump.json`
+<!-- - `python manage.py collectstatic` -->
 <!-- - `python manage.py createsuperuser` -->
 
 ## Running the Application
 - `python manage.py runserver`
 - temporarily using user: 'admin', pass: 'cikgupass'
+- NOTE: if you're running the system locally, you'll need to set:
+    - environment variable: `set DEVELOPMENT_MODE=True`
+    - and run the app with: `python manage.py runserver --insecure`
 
 ## Dumping and Loading Data
 #### Dumping
