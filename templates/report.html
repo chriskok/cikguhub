@@ -1,32 +1,38 @@
 {% extends 'base.html' %}
 
-{% block title %} CikguHub - Report {% endblock %}
+{% block title %} CikguHub - Recommendations {% endblock %}
 
 {% block content %}
-
-<main role="main">
-
-    <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="jumbotron">
-        <div class="container">
-            <h1 class="display-3">Report: {{ user.username }}</h1>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-6">
+      <h2>Sliders</h2>
+      <form>
+        <div class="form-group">
+          <label for="planner">Planner</label>
+          <input type="range" class="form-control-range" id="planner">
         </div>
-    </div>
-
-    <div class="container">
-        <div class="row">
-            <div class="col-sm col-md-6">
-                <h3>Competencies</h3>
-                <p>Planner: {{ planner_score }}</p>
-                <p>Guardian: {{ guardian_score }}</p>
-                <p>Mentor: {{ mentor_score }}</p>
-                <p>Motivator: {{ motivator_score }}</p>
-                <p>Assessor: {{ assessor_score }}</p>
-            </div>
-            <div class="col-sm col-md-6">
-                <h3>Feedback</h3>
-                <p>{{ learner_model.feedback }}</p>
-            </div>
+        <div class="form-group">
+          <label for="guardian">Guardian</label>
+          <input type="range" class="form-control-range" id="guardian">
         </div>
+        <div class="form-group">
+          <label for="mentor">Mentor</label>
+          <input type="range" class="form-control-range" id="mentor">
+        </div>
+        <div class="form-group">
+          <label for="motivator">Motivator</label>
+          <input type="range" class="form-control-range" id="motivator">
+        </div>
+        <div class="form-group">
+          <label for="assessor">Assessor</label>
+          <input type="range" class="form-control-range" id="assessor">
+        </div>
+      </form>
     </div>
+    <div class="col-md-6">
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec auctor lorem nec nisi blandit elementum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Suspendisse sed velit velit. Sed auctor dolor vel ex dictum, ac rhoncus neque iaculis. Curabitur euismod suscipit turpis, ut bibendum enim suscipit at. Sed vel erat eu nunc pretium sagittis. Aliquam sit amet tellus faucibus, fermentum orci eget, bibendum metus. Mauris vel ante sem. Sed non mi est. Nam a justo eu mauris rhoncus bibendum ut nec justo. Sed dapibus euismod sapien ut iaculis.</p>
+    </div>
+  </div>
+</div>
 {% endblock %}
