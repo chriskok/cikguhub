@@ -12,3 +12,4 @@ sqlparse==0.4.3
 tzdata==2022.7
 wheel==0.38.4
 wincertstore==0.2
+openai==0.27.0
