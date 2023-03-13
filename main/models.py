@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
     
 class Feedback(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     feedback = models.TextField(max_length=4096, null=True, blank=True)
     human_approved = models.BooleanField(default=False)
     human_edited = models.BooleanField(default=False)
@@ -31,19 +31,38 @@ class LearnerModel(models.Model):
     motivator_score = models.FloatField(default=0.0)
     assessor_score = models.FloatField(default=0.0)
 
-    current_feedback = models.ForeignKey(Feedback, on_delete=models.CASCADE, null=True, blank=True)
+    current_feedback = models.ForeignKey(Feedback, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return "{}".format(self.user)
 
+class Track(models.Model):
+    title = models.CharField(max_length=4096)
+
+    def __str__(self):
+        return "{}: {} ".format(self.title, self.list_of_module_ids)
+class Series(models.Model):
+    title = models.CharField(max_length=4096)
+    track = models.ForeignKey(Track, on_delete=models.CASCADE, null=True, blank=True)
+    track_order = models.IntegerField(default=0, null=True, blank=True)
+
+    primary_level = models.BooleanField(default=False)
+    secondary_level = models.BooleanField(default=False)
+    admin_level = models.BooleanField(default=False)
+
+    def __str__(self):
+        return "{}: {} ".format(self.title)
 class Video(models.Model):
     title = models.CharField(max_length=4096)
     tags = models.CharField(max_length=4096, help_text = "comma-separated list of tags")
     description = models.CharField(max_length=4096, default="")
     url = models.CharField(max_length=1024, unique=True)
 
+    series = models.ForeignKey(Series, on_delete=models.CASCADE, null=True, blank=True)
+    series_order = models.IntegerField(default=0, null=True, blank=True)
+
     def __str__(self):
-        return "{}".format(self.title)
+        return "{}. {}".format(str(self.id), self.title)
 
 class VideoQuestion(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
@@ -73,13 +92,6 @@ class ModuleCompletion(models.Model):
 
     def __str__(self):
         return "{} finished {}".format(self.user, self.module.video)
-
-class Track(models.Model):
-    title = models.CharField(max_length=4096)
-    list_of_module_ids = models.CharField(max_length=1024, null=True, blank=True) 
-
-    def __str__(self):
-        return "{}: {} ".format(self.title, self.list_of_module_ids)
     
 class AnswerToVideoQuestion(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
