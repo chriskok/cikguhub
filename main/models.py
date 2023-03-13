@@ -40,7 +40,7 @@ class Track(models.Model):
     title = models.CharField(max_length=4096)
 
     def __str__(self):
-        return "{}: {} ".format(self.title, self.list_of_module_ids)
+        return "{}: {} ".format(str(self.id), self.title)
 class Series(models.Model):
     title = models.CharField(max_length=4096)
     track = models.ForeignKey(Track, on_delete=models.CASCADE, null=True, blank=True)
@@ -51,7 +51,7 @@ class Series(models.Model):
     admin_level = models.BooleanField(default=False)
 
     def __str__(self):
-        return "{}: {} ".format(self.title)
+        return "{}: {} ".format(str(self.id), self.title)
 class Video(models.Model):
     title = models.CharField(max_length=4096)
     tags = models.CharField(max_length=4096, help_text = "comma-separated list of tags")
