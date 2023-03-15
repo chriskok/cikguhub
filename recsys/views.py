@@ -2,7 +2,10 @@ from django.shortcuts import render
 from django.db.models import Case, When
 from django.http import HttpResponse
 from main.models import *
+from sklearn.cluster import KMeans
+
 import json
+import numpy as np
 
 def index(request):
     return render(request, "recs.html")
@@ -34,5 +37,13 @@ def expert_recs(request, user_id):
     return render(request, "recs_expert.html", context=context)
 
 def user_clustering(request):
-    context = {"learners": LearnerModel.objects.all()}
+    datapoints = [[1, 2], [1, 4], [1, 0], [2, 3], [2, 2], [9, 3], [9, 4], [10, 2], [10, 4], [10, 0]]
+    X = np.array(datapoints)
+    kmeans = KMeans(n_clusters=2, random_state=0, n_init="auto").fit(X)
+
+    plotpoints = [{'x': item[0], 'y': item[1]} for item in datapoints]
+    context = {
+        "learners": LearnerModel.objects.all(),
+        "plotpoints": plotpoints,
+    }
     return render(request, "user_clustering.html", context=context)
