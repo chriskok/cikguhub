@@ -11,14 +11,18 @@ def index(request):
     return render(request, "recs.html")
 
 def user_recs(request):
-    recommended_module_ids = json.loads(RecommendationQueue.objects.get(user=request.user).list_of_module_ids)
-    if len(recommended_module_ids) > 0:
-        recommended_module_id = recommended_module_ids[0]
-        context = {"module": Module.objects.get(pk=recommended_module_id)}
+    recommended_ids = json.loads(RecommendationQueue.objects.get(user=request.user).list_of_ids)
+    if len(recommended_ids) > 0:
+        recommended_id = recommended_ids[0]
+        context = {"series": Series.objects.get(pk=recommended_id)}
     else:
-        context = {"module": None}
+        context = {"series": None}
 
     return render(request, "recs.html", context=context)
+
+def recommended_module(request, module_id):
+    context = {"module": Module.objects.get(pk=module_id)}
+    return render(request, "rec_module.html", context=context)
 
 def expert_recs(request, user_id):
     # TODO: add easily swappable modules IF same video
@@ -29,11 +33,11 @@ def expert_recs(request, user_id):
     else: curr_user = User.objects.get(pk=user_id)
 
     # Get recommended modules, perserving the order of the recommendation list
-    list_of_module_ids = json.loads(RecommendationQueue.objects.get(user=curr_user).list_of_module_ids)
-    preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(list_of_module_ids)])
-    recommended_modules = Module.objects.filter(id__in=list_of_module_ids).order_by(preserved)
+    list_of_ids = json.loads(RecommendationQueue.objects.get(user=curr_user).list_of_ids)
+    preserved = Case(*[When(pk=pk, then=pos) for pos, pk in enumerate(list_of_ids)])
+    recommended_series = Series.objects.filter(id__in=list_of_ids).order_by(preserved)
 
-    context = {"modules": recommended_modules, "curr_user": curr_user, "all_users": User.objects.all()}
+    context = {"series": recommended_series, "curr_user": curr_user, "all_users": User.objects.all()}
     return render(request, "recs_expert.html", context=context)
 
 def user_clustering(request):

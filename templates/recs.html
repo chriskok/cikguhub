@@ -10,20 +10,35 @@
     <div class="jumbotron">
         <div class="container">
             <h1 class="display-3">Recommended Activity</h1>
-            <br>
-            {% if module %}
-            <div class="embed-responsive embed-responsive-16by9">
-                <iframe class="embed-responsive-item" width="560" height="315" src="{{ module.video.url }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-            </div>
-            {% else %}
-            <p>No more activities left. More coming soon, thank you!</p>
-            {% endif %}
         </div>
     </div>
     
     <div class="container">
-        {% for q in module.questions.all %}
-        <p>Question: {{ q.question }}</p>
-        {% endfor %}
+        {% if series %}
+            <h3>{{ series.title }} - Track: {{ series.track.title }}</h3>
+
+            {% for v in series.video_set.all %}
+                {% with m=v.module_set.all.first %}
+                <p>{{ m.title }}</p>
+                <div class="row">
+                    <div class="col-sm col-md-3">
+                        <div class="embed-responsive embed-responsive-16by9">
+                            <iframe class="embed-responsive-item" src="{{ m.video.url }}" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    <div class="col-sm col-md-8">
+                        {% for q in m.questions.all %}
+                        <li>{{ q.question }}</li>
+                        {% endfor %}
+                    </div>
+                    <div class="col-sm col-md-1">
+                        <a href="{% url 'recsys:recommended_module' m.id %}" class="btn btn-primary">Launch Module</a>
+                    </div>
+                </div>
+                {% endwith %}
+            {% endfor %}
+        {% else %}
+        <p>No more activities left. More coming soon, thank you!</p>
+        {% endif %}
     </div>
 {% endblock %}

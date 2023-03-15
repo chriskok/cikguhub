@@ -3,6 +3,7 @@
 {% block title %} CikguHub - Recommendations {% endblock %}
 
 {% block content %}
+{% load report_extras %}
 
 <main role="main">
 
@@ -26,25 +27,30 @@
     </div>
     <div class="container">
 
-        {% for m in modules %}
+        {% for s in series %}
         <div class="card mb-2">
-            <h5 class="card-header">{{ m.title }}</h5>
+            <h5 class="card-header">{{ s.title }} - Track: {{ s.track.title }}</h5>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-sm col-md-3">
-                        <div class="embed-responsive embed-responsive-16by9">
-                            <iframe class="embed-responsive-item" src="{{ m.video.url }}" allowfullscreen></iframe>
+                {% for v in s.video_set.all %}
+                    {% with m=v.module_set.all.first %}
+                    <p>{{ m.title }}</p>
+                    <div class="row">
+                        <div class="col-sm col-md-3">
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <iframe class="embed-responsive-item" src="{{ m.video.url }}" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                        <div class="col-sm col-md-8">
+                            {% for q in m.questions.all %}
+                            <li>{{ q.question }}</li>
+                            {% endfor %}
+                        </div>
+                        <div class="col-sm col-md-1">
+                            <a href="{% url 'main:update_module' m.id %}" class="btn btn-primary">Edit</a>
                         </div>
                     </div>
-                    <div class="col-sm col-md-8">
-                        {% for q in m.questions.all %}
-                        <li>{{ q.question }}</li>
-                        {% endfor %}
-                    </div>
-                    <div class="col-sm col-md-1">
-                        <a href="{% url 'main:update_module' m.id %}" class="btn btn-primary">Edit</a>
-                    </div>
-                </div>
+                    {% endwith %}
+                {% endfor %}
             </div>
           </div>
         {% endfor %}

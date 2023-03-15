@@ -32,6 +32,7 @@ class LearnerModel(models.Model):
     assessor_score = models.FloatField(default=0.0)
 
     current_feedback = models.ForeignKey(Feedback, on_delete=models.SET_NULL, null=True, blank=True)
+    cluster = models.IntegerField(default=0, null=True, blank=True)
 
     def __str__(self):
         return "{}".format(self.user)
@@ -104,7 +105,7 @@ class AnswerToVideoQuestion(models.Model):
 
 class RecommendationQueue(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    list_of_module_ids = models.CharField(max_length=1024, null=True, blank=True) 
+    list_of_ids = models.CharField(max_length=1024, null=True, blank=True)  # Series IDs for right now
 
     def __str__(self):
-        return "{}: {} ".format(self.user, self.list_of_module_ids)
+        return "{}: {} ".format(self.user, self.list_of_ids)
