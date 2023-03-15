@@ -62,6 +62,7 @@ for index, row in df.iterrows():
                 assessor_score = assessor_score[0],
             )
         )
+        # TODO: create recommendation queue object with recsys function
         if (created): print('LearnerModel: {}-{} created'.format(lm.full_name, index))
     except IntegrityError as e: 
         if 'unique constraint' in e.args:

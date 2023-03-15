@@ -50,9 +50,6 @@ def logout_request(request):
 #                CREATE                  #
 ##########################################
 
-# admin.site.register(Video)
-# admin.site.register(VideoQuestion)
-# admin.site.register(Module)
 class VideoCreateView(SuccessMessageMixin, CreateView):
     model = Video
     template_name = 'video_create.html'
@@ -96,7 +93,5 @@ class ModuleUpdateView(SuccessMessageMixin, UpdateView):
     template_name = 'module_update.html'
     success_message = 'Module updated successfully!'
 
-    success_url ="/"
-
-    # def get_success_url(self):
-    #     return reverse_lazy('main:create_module')
+    def get_success_url(self):
+        return reverse_lazy('recsys:expert_recs', kwargs={'user_id': 0})

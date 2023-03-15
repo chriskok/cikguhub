@@ -32,3 +32,7 @@ def expert_recs(request, user_id):
 
     context = {"modules": recommended_modules, "curr_user": curr_user, "all_users": User.objects.all()}
     return render(request, "recs_expert.html", context=context)
+
+def user_clustering(request):
+    context = {"learners": LearnerModel.objects.all()}
+    return render(request, "user_clustering.html", context=context)
