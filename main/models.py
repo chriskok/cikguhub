@@ -31,6 +31,8 @@ class LearnerModel(models.Model):
     motivator_score = models.FloatField(default=0.0)
     assessor_score = models.FloatField(default=0.0)
 
+    series_completed = models.CharField(max_length=1024, null=True, blank=True)  # JSON. e.g. {'teaching': 2, 'coaching': 2, 'digital': 3}
+
     current_feedback = models.ForeignKey(Feedback, on_delete=models.SET_NULL, null=True, blank=True)
     cluster = models.IntegerField(default=0, null=True, blank=True)
 
