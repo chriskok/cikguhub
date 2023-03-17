@@ -277,14 +277,61 @@ def expert_recs(request, user_id):
     context = {"series": recommended_series, "curr_user": curr_user, "all_users": User.objects.all()}
     return render(request, "recs_expert.html", context=context)
 
-def user_clustering(request):
-    datapoints = [[1, 2], [1, 4], [1, 0], [2, 3], [2, 2], [9, 3], [9, 4], [10, 2], [10, 4], [10, 0]]
-    X = np.array(datapoints)
-    kmeans = KMeans(n_clusters=2, random_state=0, n_init="auto").fit(X)
+################################
+#          CLUSTERING          #
+################################
 
-    plotpoints = [{'x': item[0], 'y': item[1]} for item in datapoints]
+def clustering(X, k):
+    kmeans = KMeans(n_clusters=k).fit(X)
+    labels = kmeans.labels_
+    return labels
+
+def illustrate_cluster(labels, one_hot_df):
+    clustered_groups = one_hot_df.copy()
+    clustered_groups['cluster'] = labels
+    
+    cluster_means = clustered_groups.groupby('cluster').mean() # get cluster means
+    cluster_counts = clustered_groups.groupby('cluster').count() # get cluster counts
+    consider = cluster_means[['experience', 'teaching_level', 'roles_T']] # list of features we could highlight
+    # we want to highlight the features for each cluster that are furthest from the mean
+    highlight = consider.columns[np.argsort(np.array(abs((consider - np.mean(consider, axis=0))\
+                                                         /np.mean(consider, axis=0))))[:, -2:]]
+    cluster_msgs = {}
+    for i in range(len(cluster_means)):
+        msg = f"{cluster_counts.iloc[i]['experience']} people, "
+        
+        for h in highlight[i]:
+            value = cluster_means.iloc[i][h]
+            if 'roles_T' in h: msg = msg + f'{round(100*value)}% are teachers, '
+            elif 'experience' in h: msg = msg + f'average experience is {round(value, 2)} years, '
+            elif 'teaching_level' in h: msg = msg + f'Average school level is {round(value)}, '
+            else: msg = msg + str(h) +  str(cluster_means.iloc[i][h])
+        
+        cluster_msgs[f'Cluster {i}'] = msg
+    return cluster_msgs
+
+def user_clustering(request):
+
+    # df = pd.DataFrame(columns=['teaching_level', 'experience', 'role', 'wanted_skills'])
+    df = pd.DataFrame(list(LearnerModel.objects.all().values('school_level', 'years_of_experience', 'role', 'skill_interests')))
+    df = df.rename(columns={'school_level':'teaching_level', 'years_of_experience':'experience', 'skill_interests':'wanted_skills'})
+
+    # Convert user model to fit rec sys preprocssing above 
+    coded_exp1, coded_skills1, coded_roles1, coded_level1 = code_responses(df)
+    user_model = pd.DataFrame({})
+    user_model['experience'] = coded_exp1
+    user_model['wanted_skills'] = coded_skills1
+    user_model['roles'] = coded_roles1
+    user_model['teaching_level'] = coded_level1
+    one_hot_um = one_hot_encoding(user_model)
+
+    X = np.array(one_hot_um)
+    labels = clustering(X, 4)
+    cluster_msgs = illustrate_cluster(labels, one_hot_um)
+
     context = {
         "learners": LearnerModel.objects.all(),
-        "plotpoints": plotpoints,
+        "labels": labels,
+        "cluster_msgs": cluster_msgs,
     }
     return render(request, "user_clustering.html", context=context)
