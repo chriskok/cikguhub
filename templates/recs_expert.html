@@ -27,34 +27,43 @@
     </div>
     <div class="container">
 
+        <div id="accordion">
         {% for s in series %}
-        <div class="card mb-2">
-            <h5 class="card-header">{{ s.title }} - Track: {{ s.track.title }}</h5>
-            <div class="card-body">
-                {% for v in s.video_set.all %}
-                    {% with m=v.module_set.all.first %}
-                    <p>{{ m.title }}</p>
-                    <div class="row">
-                        <div class="col-sm col-md-3">
-                            <div class="embed-responsive embed-responsive-16by9">
-                                <iframe class="embed-responsive-item" src="{{ m.video.url }}" allowfullscreen></iframe>
+            <div class="card mb-0">
+                <div class="card-header" id="heading{{ s.id }}">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapse{{ s.id }}" aria-expanded="true" aria-controls="collapse{{ s.id }}">
+                            {{ s.title }} - Track: {{ s.track.title }}
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapse{{ s.id }}" class="collapse" aria-labelledby="heading{{ s.id }}" data-parent="#accordion">
+                    <div class="card-body">
+                        {% for v in s.video_set.all %}
+                            {% with m=v.module_set.all.first %}
+                            <p>{{ m.title }}</p>
+                            <div class="row">
+                                <div class="col-sm col-md-3">
+                                    <div class="embed-responsive embed-responsive-16by9">
+                                        <iframe class="embed-responsive-item" src="{{ m.video.url }}" allowfullscreen></iframe>
+                                    </div>
+                                </div>
+                                <div class="col-sm col-md-8">
+                                    {% for q in m.questions.all %}
+                                    <li>{{ q.question }}</li>
+                                    {% endfor %}
+                                </div>
+                                <div class="col-sm col-md-1">
+                                    <a href="{% url 'main:update_module' m.id %}" class="btn btn-primary">Edit</a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-sm col-md-8">
-                            {% for q in m.questions.all %}
-                            <li>{{ q.question }}</li>
-                            {% endfor %}
-                        </div>
-                        <div class="col-sm col-md-1">
-                            <a href="{% url 'main:update_module' m.id %}" class="btn btn-primary">Edit</a>
-                        </div>
+                            {% endwith %}
+                        {% endfor %}
                     </div>
-                    {% endwith %}
-                {% endfor %}
+                </div>
             </div>
-          </div>
         {% endfor %}
-
+        </div>
     </div>
 
 {% endblock %}

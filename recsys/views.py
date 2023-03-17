@@ -208,9 +208,24 @@ def user_recs(request):
         recommended_id = recommended_ids[0]
         # get list of completed modules and add to context (to filter out)
         completed_modules = list(request.user.modulecompletion_set.all().values_list('module__id', flat=True))  
-        context = {"series": Series.objects.get(pk=recommended_id), "completed_modules": completed_modules}
+        completed_videos = list(request.user.modulecompletion_set.all().values_list('module__video__id', flat=True))  
+        curr_series = Series.objects.get(pk=recommended_id)
+        curr_video = curr_series.video_set.order_by('series_order').exclude(id__in=completed_videos).first()
+        curr_module = curr_video.module_set.first()
+
+        # get secondary track
+        series_in_curr_track = list(curr_series.track.series_set.all().values_list('id', flat=True))
+        recommended_ids_2 = list(set(recommended_ids) - set(series_in_curr_track))
+        if (len(recommended_ids_2)>0):
+            recommended_id_2 = recommended_ids_2[0]
+            curr_series_2 = Series.objects.get(pk=recommended_id_2)
+            curr_video_2 = curr_series_2.video_set.order_by('series_order').exclude(id__in=completed_videos).first()
+            curr_module_2 = curr_video_2.module_set.first()
+            context = {"series": curr_series, "module": curr_module, "series2": curr_series_2, "module2": curr_module_2, "completed_modules": completed_modules}
+        else:
+            context = {"series": curr_series, "module": curr_module, "series2": None, "module2": None, "completed_modules": completed_modules}
     else:
-        context = {"series": None, "completed_modules": []}
+        context = {"series": None, "module": None, "series2": None, "module2": None, "completed_modules": []}
 
     return render(request, "recs.html", context=context)
 
@@ -250,6 +265,9 @@ def expert_recs(request, user_id):
     # Get the user in question
     if (user_id == 0): curr_user = User.objects.first()
     else: curr_user = User.objects.get(pk=user_id)
+
+    if (not RecommendationQueue.objects.filter(user=curr_user).exists()):
+        produce_recommendations(curr_user)
 
     # Get recommended modules, perserving the order of the recommendation list
     list_of_ids = json.loads(RecommendationQueue.objects.get(user=curr_user).list_of_ids)
