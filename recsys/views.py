@@ -11,13 +11,71 @@ import pandas as pd
 def index(request):
     return render(request, "recs.html")
 
-def code_user_interests(user_interests):
+################################
+#       DATA MANIPULATION      #
+################################
 
-    skills_code = {'KemahiranMengajar/TeachingSkills' : 'T', 
-                  'Bimbingan&Pementoran/Coaching&Mentoring': 'C',
-                  'Kepimpinan/Leadership': 'L', 
-                  'KemahiranDigital/DigitalSkills(contoh:aplikasiMicrosoftWord/Excel/PowerPointdanGoogleDoc/Sheet/Slide)': 'D',
-                  'KemahiranMultimedia/MultimediaSkills(contoh:pembangunanvideo)': 'M'}
+skills_code = {'KemahiranMengajar/TeachingSkills' : 'teaching', 
+              'Bimbingan&Pementoran/Coaching&Mentoring': 'coaching',
+              'Kepimpinan/Leadership': 'leadership', 
+              'KemahiranDigital/DigitalSkills(contoh:aplikasiMicrosoftWord/Excel/PowerPointdanGoogleDoc/Sheet/Slide)': 'digital',
+              'KemahiranMultimedia/MultimediaSkills(contoh:pembangunanvideo)': 'multimedia'}
+
+exp_code = {'Kurang daripada 1 tahun / Less than 1 year': 0,
+            '1 hingga 5 tahun / 1 to 5 years' : 1,
+            '6 hingga 10 tahun / 6 to 10 years': 2,
+           'Lebih daripada 10 tahun / More than 10 years': 3}
+
+role_code = {'GuruAkademikBiasa/AcademicTeacher': 'T', 
+             'KetuaPanitia/PanelHead': 'P', 
+             'Officer': 'O'}
+
+level_code = {'Other:': -1,
+              'Saya bukan seorang cikgu / I am not a teacher': 0,
+              'Sekolah Kebangsaan / National Primary School': 1,
+              'Sekolah Menengah Kebangsaan / National Secondary School': 2}
+
+def code_responses(df):
+
+    coded_exp = []
+    coded_skills = []
+    coded_roles = []
+    coded_level = []
+
+    for i, col in df.iterrows(): # read through every row in df
+
+        # grab column data for the row
+        lvl = col['teaching_level']
+        exp = col['experience']
+        skills = col['wanted_skills'].split(',')
+        roles = str(col['role']).split(',')
+        
+        coded_level.append(level_code[lvl]) # pass through the school level they teach
+
+        if exp in exp_code.keys(): # this if/else handles other/nan input
+            coded_exp.append(exp_code[exp])
+        else:
+            coded_exp.append(exp)
+
+        for j in range(len(skills)): # look at each skill selected
+            s = skills[j].replace(' ', '')
+            if s in skills_code.keys():
+                skills[j] = s.replace(s, skills_code[s])
+            else:
+                skills[j] = '*' # for now mark free response with star
+        coded_skills.append(skills)
+
+        for j in range(len(roles)): # look at each role selected
+            r = roles[j].replace(' ', '')
+            if r in role_code.keys():
+                roles[j] = r.replace(r, role_code[r])
+            else:
+                roles[j] = '*' # for now mark free response with star
+        coded_roles.append(roles)
+        
+    return coded_exp, coded_skills, coded_roles, coded_level
+
+def code_user_interests(user_interests):
 
     skills = user_interests.split(',')
     coded_skills = []
@@ -39,6 +97,10 @@ def create_user_df(max_track_num, ranking, series_completed, user_interests, use
     
     return df
 
+################################
+#         REC ALGORITHM        #
+################################
+
 def recommend_videos(df):
     
     feature_order = ['Open Tracks', 'User Engagement', 'Cluster', 'Ranking'] # order in which we consider features
@@ -56,38 +118,95 @@ def recommend_videos(df):
         other_recs = avaliable_tracks[df['User Interest'] == 0]
         other_recs = list(other_recs.sort_values(feature_order, ascending=False).index)
         return sorted_recs + other_recs[0:n]
+    
+def one_hot_encoding(user_model_df):
+    one_hot_um = pd.DataFrame({})
+    one_hot_um['experience'] = user_model_df['experience']
+    one_hot_um['teaching_level'] = user_model_df['teaching_level']
+    one_hot_um['teaching'] = [1 if 'teaching' in i else 0 for i in user_model_df['wanted_skills']]
+    one_hot_um['coaching'] = [1 if 'coaching' in i else 0 for i in user_model_df['wanted_skills']]
+    one_hot_um['leadership'] = [1 if 'leadership' in i else 0 for i in user_model_df['wanted_skills']]
+    one_hot_um['digital'] = [1 if 'digital' in i else 0 for i in user_model_df['wanted_skills']]
+    one_hot_um['multimedia'] = [1 if 'multimedia' in i else 0 for i in user_model_df['wanted_skills']]
+    one_hot_um['*'] = [1 if '*' in i else 0 for i in user_model_df['wanted_skills']]
+    one_hot_um['roles_T'] = [1 if 'T' in i else 0 for i in user_model_df['roles']]
+    one_hot_um['roles_P'] = [1 if 'P' in i else 0 for i in user_model_df['roles']]
+    one_hot_um['roles_O'] = [1 if 'O' in i else 0 for i in user_model_df['roles']]
+    one_hot_um['roles_*'] = [1 if '*' in i else 0 for i in user_model_df['roles']]
 
-# TODO: function to genereate a rec queue for a given user
+    return one_hot_um
+
 def produce_recommendations(user):
     user_lm = LearnerModel.objects.get(user=user)
-    print(user_lm.school_level)
-    # convert to DF ^
 
+    # Convert user model to fit rec sys preprocssing above 
+    # TODO: tidy up!
+    df = pd.DataFrame(columns=['teaching_level', 'experience', 'role', 'wanted_skills'])
+    df.loc[0] = [user_lm.school_level, user_lm.years_of_experience, user_lm.role, user_lm.skill_interests]
+    coded_exp1, coded_skills1, coded_roles1, coded_level1 = code_responses(df)
+    user_model = pd.DataFrame({})
+    user_model['experience'] = coded_exp1
+    user_model['wanted_skills'] = coded_skills1
+    user_model['roles'] = coded_roles1
+    user_model['teaching_level'] = coded_level1
+    one_hot_um = one_hot_encoding(user_model)
+
+    # sample user data
+    user_interests = one_hot_um.iloc[0][2:7] # these are input by users and can be changed at any time
+    user_engagement = {'teaching':0.4, 'coaching':0.7, 'leadership':0.2, 'digital':0.6, 'multimedia':0.4} # TODO: we need to calculate this metric
+    cluster_engagement = {'teaching':0.8, 'coaching':0.2, 'leadership':0.4, 'digital':0.95, 'multimedia':0.6} # TODO: we need to calculate this metric
+
+    # TODO: this is just a failsafe if we haven't added a series completed dictionary yet
+    if (not user_lm.series_completed): 
+        user_lm.series_completed = json.dumps({'teaching': 1, 'coaching': 1, 'leadership':1})
+        user_lm.save()
+
+    # Get the databases tracks and iterate through them to find the following:
+    max_track_num = {}  # dictionary {track: series count (max)}
+    series_completed = json.loads(user_lm.series_completed) # dictionary {track: number of series that the user has completed}
     ranking = {'teaching': 0.84, 'coaching': 0.53, 'leadership':0.57, 'digital':0.81, 'multimedia':0.80}
-    user_interests = code_user_interests(user_lm.skill_interests)
 
-    # Series for tracks (can count)
-    max_track_num = {}  # track: series count (max)
-    series_completed = json.loads(user_lm.series_completed) # track: number of series that the user has completed
     all_tracks = Track.objects.all()
     for t in all_tracks:
         max_track_num[t.title] = t.series_set.all().count()
-    
     for key,value in max_track_num.items():
         if (key not in series_completed): 
             series_completed[key] = 0
-
     
+    # Create final DataFrame for recommendations
+    df = create_user_df(max_track_num, ranking, series_completed, user_interests, user_engagement, cluster_engagement)
+    
+    # create a new recommendation queue for this user
+    recommended_tracks = recommend_videos(df)
+    completed_modules = list(user.modulecompletion_set.all().values_list('id', flat=True))  # get list of all modules completed by the user
+    rec_tracks = Track.objects.filter(title__in=recommended_tracks)  # get all relevant tracks for this user based on recs
+    list_of_series_ids = []
+    for t in rec_tracks:    
+        for s in t.series_set.all():   
+            curr_series_modules = list(s.video_set.all().values_list('id', flat=True)) # get list of all series
+            check = all(item in completed_modules for item in curr_series_modules)
+            if (not check): list_of_series_ids.append(s.id)
+
+    RecommendationQueue.objects.get_or_create(user=user, list_of_ids=list_of_series_ids)
+
+################################
+#           WEBPAGES           #
+################################
 
 def user_recs(request):
-    produce_recommendations(request.user)
+
+    # TODO: also recommend on user creation and module completion
+    if (not RecommendationQueue.objects.filter(user=request.user).exists()):
+        produce_recommendations(request.user)
 
     recommended_ids = json.loads(RecommendationQueue.objects.get(user=request.user).list_of_ids)
     if len(recommended_ids) > 0:
         recommended_id = recommended_ids[0]
-        context = {"series": Series.objects.get(pk=recommended_id)}
+        # TODO: get list of completed modules and add to context (to filter out)
+        completed_modules = list(request.user.modulecompletion_set.all().values_list('id', flat=True))  
+        context = {"series": Series.objects.get(pk=recommended_id), "completed_modules": completed_modules}
     else:
-        context = {"series": None}
+        context = {"series": None, "completed_modules": None}
 
     return render(request, "recs.html", context=context)
 
