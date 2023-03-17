@@ -2,10 +2,10 @@ from django import template
 
 register = template.Library()
 
-# @register.filter
-# def by_user(qset, user):
-#     return qset.filter(user=user)
+@register.filter
+def index(indexable, i):
+    return indexable[i]
 
-# @register.filter
-# def get_first_answer(qset):
-#     return qset.first().answer
+@register.filter
+def get_question(obj):
+    return obj.question

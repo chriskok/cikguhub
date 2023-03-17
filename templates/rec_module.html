@@ -3,6 +3,8 @@
 {% block title %} CikguHub - Recommendations {% endblock %}
 
 {% block content %}
+{% load crispy_forms_tags %}
+{% load recsys_extras %}
 
 <main role="main">
 
@@ -22,8 +24,14 @@
     </div>
     
     <div class="container">
-        {% for q in module.questions.all %}
-        <p>Question: {{ q.question }}</p>
-        {% endfor %}
+
+        <form action="{% url 'recsys:recommended_module' module.id %}" method="post">
+            {% csrf_token %}
+            {% for field in form %}
+                <p>Question #{{forloop.counter}}: {{ module.questions.all|index:forloop.counter0|get_question }}</p>
+                {{ field | as_crispy_field }}
+            {% endfor %}
+            <input type="submit" value="Submit">
+        </form>
     </div>
 {% endblock %}

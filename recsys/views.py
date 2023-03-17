@@ -1,8 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import  render, redirect
 from django.db.models import Case, When
 from django.http import HttpResponse
-from main.models import *
+from django.contrib import messages
 from sklearn.cluster import KMeans
+
+from .forms import *
+from main.models import *
 
 import json
 import numpy as np
@@ -178,7 +181,7 @@ def produce_recommendations(user):
     
     # create a new recommendation queue for this user
     recommended_tracks = recommend_videos(df)
-    completed_modules = list(user.modulecompletion_set.all().values_list('id', flat=True))  # get list of all modules completed by the user
+    completed_modules = list(user.modulecompletion_set.all().values_list('module__video__id', flat=True))  # get list of all modules completed by the user
     rec_tracks = Track.objects.filter(title__in=recommended_tracks)  # get all relevant tracks for this user based on recs
     list_of_series_ids = []
     for t in rec_tracks:    
@@ -187,7 +190,9 @@ def produce_recommendations(user):
             check = all(item in completed_modules for item in curr_series_modules)
             if (not check): list_of_series_ids.append(s.id)
 
-    RecommendationQueue.objects.get_or_create(user=user, list_of_ids=list_of_series_ids)
+    recq,_ = RecommendationQueue.objects.get_or_create(user=user)
+    recq.list_of_ids = list_of_series_ids
+    recq.save()
 
 ################################
 #           WEBPAGES           #
@@ -195,23 +200,47 @@ def produce_recommendations(user):
 
 def user_recs(request):
 
-    # TODO: also recommend on user creation and module completion
     if (not RecommendationQueue.objects.filter(user=request.user).exists()):
         produce_recommendations(request.user)
 
     recommended_ids = json.loads(RecommendationQueue.objects.get(user=request.user).list_of_ids)
     if len(recommended_ids) > 0:
         recommended_id = recommended_ids[0]
-        # TODO: get list of completed modules and add to context (to filter out)
-        completed_modules = list(request.user.modulecompletion_set.all().values_list('id', flat=True))  
+        # get list of completed modules and add to context (to filter out)
+        completed_modules = list(request.user.modulecompletion_set.all().values_list('module__id', flat=True))  
         context = {"series": Series.objects.get(pk=recommended_id), "completed_modules": completed_modules}
     else:
-        context = {"series": None, "completed_modules": None}
+        context = {"series": None, "completed_modules": []}
 
     return render(request, "recs.html", context=context)
 
 def recommended_module(request, module_id):
-    context = {"module": Module.objects.get(pk=module_id)}
+    curr_module = Module.objects.get(pk=module_id)
+    no_of_questions = curr_module.questions.count()
+
+    if (no_of_questions==2): curr_form=Module2QForm
+    elif (no_of_questions==3): curr_form=Module3QForm
+    elif (no_of_questions==4): curr_form=Module4QForm
+    else: curr_form=Module2QForm
+
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = curr_form(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            for count, question in enumerate(curr_module.questions.all()):
+                curr_answer = form.cleaned_data['answer{}'.format(count+1)]
+                AnswerToVideoQuestion.objects.create(user=request.user, video=curr_module.video, question=question, answer=curr_answer)
+            # TODO: add form input for feedback rating and feedback
+            ModuleCompletion.objects.create(user = request.user, module = curr_module, time_spent = 30.0, complete = True, feedback_rating = 3.5, feedback='Good!')
+            produce_recommendations(request.user)
+            messages.info(request, "You completed: {}!".format(curr_module.title))
+            return redirect("recsys:user_recs")
+    else:
+        form = curr_form()
+
+    context = {"module": curr_module, "form": form}
     return render(request, "rec_module.html", context=context)
 
 def expert_recs(request, user_id):

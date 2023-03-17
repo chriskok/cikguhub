@@ -19,6 +19,7 @@
 
             {% for v in series.video_set.all %}
                 {% with m=v.module_set.all.first %}
+                {% if m.id not in completed_modules %}
                 <p>{{ m.title }}</p>
                 <div class="row">
                     <div class="col-sm col-md-3">
@@ -35,6 +36,7 @@
                         <a href="{% url 'recsys:recommended_module' m.id %}" class="btn btn-primary">Launch Module</a>
                     </div>
                 </div>
+                {% endif %}
                 {% endwith %}
             {% endfor %}
         {% else %}
