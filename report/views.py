@@ -15,12 +15,7 @@ def user_report(request):
             m: core.metrics[m].to_view(int(getattr(curr_learner_model, m + "_score")))
             for m in core.metrics
         },
-        'description': core.Description(curr_learner_model),
-        #int(curr_learner_model.planner_score),
-        #'guardian_score': int(curr_learner_model.guardian_score),
-        #'mentor_score': int(curr_learner_model.mentor_score),
-        #'motivator_score': int(curr_learner_model.motivator_score),
-        #'assessor_score': int(curr_learner_model.assessor_score),
+        'description': core.get_relevant_answers(curr_learner_model)#"placeholder"#core.Description(curr_learner_model),
     }
     return render(request, "report.html", context)
 
