@@ -1,0 +1,23 @@
+.navbar {
+    width: 25%;
+    align-items: flex-start;
+    height: 100vh; /* make the navbar full-height */
+    background-color: #383838; /* Change the background color */
+}
+
+.navbar .container-fluid, .navbar-expand-lg .navbar-collapse, .navbar-expand-lg .navbar-nav {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.navbar-brand {
+    margin-left: .5rem;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+
+.navbar-brand img {
+    height: 30px; /* Adjust the height of the logo */
+    margin-right: 10px; /* Add margin to the logo */
+}
