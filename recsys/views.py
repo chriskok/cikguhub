@@ -282,7 +282,7 @@ def expert_recs(request, user_id):
 ################################
 
 def clustering(X, k):
-    kmeans = KMeans(n_clusters=k).fit(X)
+    kmeans = KMeans(n_clusters=k, random_state=37).fit(X)
     labels = kmeans.labels_
     return labels
 
