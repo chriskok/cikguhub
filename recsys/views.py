@@ -2,7 +2,7 @@ from django.shortcuts import  render, redirect
 from django.db.models import Case, When
 from django.http import HttpResponse
 from django.contrib import messages
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, AgglomerativeClustering, SpectralClustering
 
 from .forms import *
 from main.models import *
@@ -281,9 +281,12 @@ def expert_recs(request, user_id):
 #          CLUSTERING          #
 ################################
 
-def clustering(X, k):
-    kmeans = KMeans(n_clusters=k, random_state=37).fit(X)
-    labels = kmeans.labels_
+def clustering(X, k, method='kmeans'):
+    model = None
+    if (method=='agglomerative'): model = AgglomerativeClustering(n_clusters=k).fit(X)
+    elif (method=='spectral'): model = SpectralClustering(n_clusters=k, random_state=37).fit(X)
+    else: model = KMeans(n_clusters=k, random_state=37).fit(X)
+    labels = model.labels_
     return labels
 
 def illustrate_cluster(labels, one_hot_df):
@@ -310,7 +313,7 @@ def illustrate_cluster(labels, one_hot_df):
         cluster_msgs[f'Cluster {i}'] = msg
     return cluster_msgs
 
-def user_clustering(request):
+def user_clustering(request, method='kmeans', num_clusters=4):
 
     # df = pd.DataFrame(columns=['teaching_level', 'experience', 'role', 'wanted_skills'])
     df = pd.DataFrame(list(LearnerModel.objects.all().values('school_level', 'years_of_experience', 'role', 'skill_interests')))
@@ -326,12 +329,14 @@ def user_clustering(request):
     one_hot_um = one_hot_encoding(user_model)
 
     X = np.array(one_hot_um)
-    labels = clustering(X, 4)
+    labels = clustering(X, num_clusters, method)
     cluster_msgs = illustrate_cluster(labels, one_hot_um)
 
     context = {
         "learners": LearnerModel.objects.all(),
         "labels": labels,
         "cluster_msgs": cluster_msgs,
+        "method": method,
+        "num_clusters": num_clusters,
     }
     return render(request, "user_clustering.html", context=context)

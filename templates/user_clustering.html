@@ -13,7 +13,27 @@
     </div>
 </div>
 
+
+
 <div class="container">
+  <div class="form-group">
+    <label for="numSelect">Number of Clusters</label>
+    <select class="form-control" id="numSelect" onchange="location = this.value;">
+      {% for i in '3456789'|make_list %}
+      <option value="{% url 'recsys:user_clustering' method i %}" {% if i == num_clusters|stringformat:"i" %}selected{% endif %}>{{ i }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  
+  <div class="form-group">
+    <label for="methodSelect">Clustering Method</label>
+    <select class="form-control" id="methodSelect" onchange="location = this.value;">
+      <option value="{% url 'recsys:user_clustering' 'kmeans' num_clusters %}" {% if method == "kmeans" %}selected{% endif %}>K-Means</option>
+      <option value="{% url 'recsys:user_clustering' 'agglomerative' num_clusters %}" {% if method == "agglomerative" %}selected{% endif %}>Agglomerative</option>
+      <option value="{% url 'recsys:user_clustering' 'spectral' num_clusters %}" {% if method == "spectral" %}selected{% endif %}>Spectral</option>
+    </select>
+  </div>
+
   {% for key,value in cluster_msgs.items %}
   <p> {{ key }}: {{ value }}</p>
   {% endfor %}
