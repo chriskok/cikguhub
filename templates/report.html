@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
-
 {% load static %}
 
 {% block title %} CikguHub - Recommendations {% endblock %}
 
 {% block content %}
-<h1>Competency Progress</h1>
+<link rel="stylesheet" href="{% static 'css/user_report.css' %}">
+<h1 class="title">Competency Progress</h1>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-8">
@@ -14,7 +14,7 @@
                 <div class="p-2">
                     <img src="{% static value.icon_url %}" alt="icon for {{value.name}}" width="50" height="50">
                 </div>
-    
+
                 <div class="p-2" style="flex-grow: 1;">
                     <div class="input-group">
                         <input type="range" class="form-control-range" id="planner" min="0" max="100"
@@ -23,15 +23,17 @@
                     </div>
                 </div>
             </div>
-    
+
             <p style="margin-top: -20px;">{{ value.name }}</p>
             {% endfor %}
         </div>
-    
+
         <div class="col-md-4">
             {{ description }}
         </div>
     </div>
 </div>
+
+<a class="button" href="{% url 'recsys:user_recs' %}">Join a class to improve skills!</a>
 
 {% endblock %}
