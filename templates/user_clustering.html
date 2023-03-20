@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load recsys_extras %}
 
 {% block title %} CikguHub - User Clustering {% endblock %}
 
@@ -34,12 +36,28 @@
     </select>
   </div>
 
-  {% for key,value in cluster_msgs.items %}
-  <p> {{ key }}: {{ value }}</p>
-  {% endfor %}
+  
+  <div class="card-container" style="display: flex; flex-wrap: wrap;">
+    {% for key,value in cluster_msgs.items %}
+      <div class="card border-0" style="width: 18rem; margin: 10px;">
+        {% if value|make_list|first|to_int <= 3 %}
+          <img class="card-img-top" src="{% static 'img/low_clus.png' %}" style="background-color: #FFD600">
+        {% elif value|make_list|first|to_int >= 4 and value|make_list|first|to_int <= 6 %}
+          <img class="card-img-top" src="{% static 'img/med_clus.png' %}" style="background-color: #FFD600">
+        {% else %}
+          <img class="card-img-top" src="{% static 'img/high_clus.png' %}" style="background-color: #FFD600">
+        {% endif %}
+        <div class="card-body">
+          <h5 class="card-title">{{ key }}</h5>
+          <p class="card-text">{{ value }}</p>
+          <!-- <a href="#" class="btn btn-primary">Show list</a> -->
+        </div> 
+      </div>   
+    {% endfor %}
+  </div>
+
 
   <br>
-  
   {% for learner in learners %}
   <p> {{learner.full_name}} - Experience: {{learner.years_of_experience}} - Cluster: {{ labels|index:forloop.counter0 }}</p>
   {% endfor %}
