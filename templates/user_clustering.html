@@ -39,6 +39,12 @@
   {% endfor %}
 
   <br>
+
+  {% autoescape off %}
+  {{ plot_div }}
+  {% endautoescape %}
+
+  <br>
   
   {% for learner in learners %}
   <p> {{learner.full_name}} - Experience: {{learner.years_of_experience}} - Cluster: {{ labels|index:forloop.counter0 }}</p>
