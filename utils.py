@@ -71,8 +71,8 @@ def populate_all_responses():
                 answer = generate_response_2(video_title, video_desc, q.question, metrics)
                 print("Question: {}, Answer: {}".format(q.question, answer))
                 AnswerToVideoQuestion.objects.create(user=user_model.user, video=module.video, question=q, answer=answer)
-        # create module compleition object once all questions are answered
-        ModuleCompletion.objects.create(user=user_model.user, module=module, time_spent=30.0, complete=True)
+            # create module compleition object once all questions are answered
+            ModuleCompletion.objects.create(user=user_model.user, module=module, time_spent=30.0, complete=True)
 
 populate_all_responses()
 
