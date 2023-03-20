@@ -32,11 +32,12 @@ def generate_response(vid_title, vid_desc, question, metric, target_score):
     return result.choices[0].message.content
 
 def generate_response_2(vid_title, vid_desc, question, metrics):
-    scores_and_desc = ', '.join([f'{metrics[m]}/100, meaning {d}' for m, d in core.metrics.items()])
+    scores_and_desc = ', '.join([f'{metrics[m]}/100 for {d.name}, meaning {d.description}' for m, d in core.metrics.items()])
+
     result = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo", 
                 messages = [{"role": "system", "content" : 
-    f"""You are an example answer generator. You are going to be given a question and will be asked to generate a response that will reflect your scores on certain competencies."""},
+    f"""You are an example answer generator. You are going to be given a question and will be asked to generate a response that will reflect your scores on certain competencies. Even if you don't have enough information, just make it up."""},
     {"role": "user", "content" : 
     f"""Write a 2 sentence response to the question "How would you apply the knowledge you learned from this video to your own teaching?" to the video: Using Candy As A Reward (video description: This is a video about how a teacher might utilize candy as a positive motivation method in their lesson plans), that would reflect your scores on the following competencies: Listening Skills: 10/100, Motivational Ideation: 60/100"""},
     {"role": "assistant", "content" : 
@@ -44,6 +45,7 @@ def generate_response_2(vid_title, vid_desc, question, metrics):
     {"role": "user", "content" : 
     f"""Write a 2 sentence response to the question {question} to the video: {vid_title} (video description: {vid_desc}) that would reflect your scores on the following competencies: {scores_and_desc}"""}
     ])
+
     return result.choices[0].message.content
 
 def populate_all_responses():
