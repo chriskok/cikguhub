@@ -42,7 +42,7 @@ Assesssor: {self.learner_model.assessor_score}
 
         user_prompt = f"""
 Teacher {self.learner_model.user} has scores {', '.join([f'{m}: {int(getattr(self.learner_model, m + "_score"))}.' for m in metric_descriptions])}.
-Here are some of their recent replies to questions on videos: {get_relevant_answers(self.learner_model.user)}
+Here are some of their recent replies to questions on videos: {get_relevant_answers(self.learner_model)}
 """
 
         result = openai.ChatCompletion.create(
