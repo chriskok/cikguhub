@@ -1,5 +1,6 @@
 from .metrics import Metric
 from .descriptions import Description
+from .relevant import get_relevant_answers
 
 # Instantiate metrics
 metrics = {

@@ -16,11 +16,6 @@ def user_report(request):
             for m in core.metrics
         },
         'description': core.Description(curr_learner_model),
-        #int(curr_learner_model.planner_score),
-        #'guardian_score': int(curr_learner_model.guardian_score),
-        #'mentor_score': int(curr_learner_model.mentor_score),
-        #'motivator_score': int(curr_learner_model.motivator_score),
-        #'assessor_score': int(curr_learner_model.assessor_score),
     }
     return render(request, "report.html", context)
 
