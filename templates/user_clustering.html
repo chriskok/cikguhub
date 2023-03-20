@@ -41,11 +41,11 @@
     {% for key,value in cluster_msgs.items %}
       <div class="card border-0" style="width: 18rem; margin: 10px;">
         {% if value|make_list|first|to_int <= 3 %}
-          <img class="card-img-top" src="{% static 'img/low_clus.png' %}" style="background-color: #FFD600">
+          <img class="card-img-top" src="{% static 'img/low_clus.png' %}" style="background-color: #FFD600;  object-fit: contain;">
         {% elif value|make_list|first|to_int >= 4 and value|make_list|first|to_int <= 6 %}
-          <img class="card-img-top" src="{% static 'img/med_clus.png' %}" style="background-color: #FFD600">
+          <img class="card-img-top" src="{% static 'img/med_clus.png' %}" style="background-color: #FFD600; object-fit: contain;">
         {% else %}
-          <img class="card-img-top" src="{% static 'img/high_clus.png' %}" style="background-color: #FFD600">
+          <img class="card-img-top" src="{% static 'img/high_clus.png' %}" style="background-color: #FFD600;  object-fit: contain;">
         {% endif %}
         <div class="card-body">
           <h5 class="card-title">{{ key }}</h5>
