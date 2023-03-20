@@ -61,7 +61,7 @@ Your score of 90 in the Assessor competency shows that <b>you are dedicated to h
 However, your scores of 20 in Planner and 5 in Motivator indicate that <b>you need to work on your planning and motivational skills</b>. Your response to the Planning assignment suggests that <b>you don't think planning really matters and prefer to wing it, which is a concerning attitude for a teacher</b>. In your Motivator assignment, you stated that <b>you don't think motivation is important and even try to make your students upset, which is a major weakness as motivating students is a key aspect of teaching.</b>"""},
             {"role": "user", "content" : user_prompt}]
         )
-        return result.choices[0].message.content + f"<br>DEBUG: {relevant_responses}"
+        return result.choices[0].message.content + f"<br><br><br>DEBUG: {relevant_responses}"
 
     def __str__(self):
         return str(self.description)
