@@ -40,9 +40,11 @@ Assesssor: {self.learner_model.assessor_score}
 
         responses = AnswerToVideoQuestion.objects.filter(user=self.learner_model.user).all()
 
+        relevant_responses = get_relevant_answers(self.learner_model)
+
         user_prompt = f"""
 Teacher {self.learner_model.user} has scores {', '.join([f'{m}: {int(getattr(self.learner_model, m + "_score"))}.' for m in metric_descriptions])}.
-Here are some of their recent replies to questions on videos: {get_relevant_answers(self.learner_model)}
+Here are some of their recent replies to questions on videos: {relevant_responses}
 """
 
         result = openai.ChatCompletion.create(
@@ -59,7 +61,7 @@ Your score of 90 in the Assessor competency shows that <b>you are dedicated to h
 However, your scores of 20 in Planner and 5 in Motivator indicate that <b>you need to work on your planning and motivational skills</b>. Your response to the Planning assignment suggests that <b>you don't think planning really matters and prefer to wing it, which is a concerning attitude for a teacher</b>. In your Motivator assignment, you stated that <b>you don't think motivation is important and even try to make your students upset, which is a major weakness as motivating students is a key aspect of teaching.</b>"""},
             {"role": "user", "content" : user_prompt}]
         )
-        return result.choices[0].message.content
+        return result.choices[0].message.content + f"<br>DEBUG: {relevant_responses}"
 
     def __str__(self):
         return str(self.description)

@@ -12,4 +12,4 @@ def get_relevant_answers(usermodel):
         all_answers.extend(list(all_answers_for_module))
         # TODO: embed answers and find most relevant ones
 
-    return all_answers[:5]
+    return [f"question: {x.question}, answer: {x.answer}" for x in all_answers[:5]]
