@@ -9,7 +9,6 @@ try:
         api_keys = json.load(f)
         openai.api_key = api_keys['openai']
         openai_enabled = True
-
 except:
     openai_api_key = None
     message = "No OpenAI API key found. Please add one to api_keys.json."
@@ -34,7 +33,6 @@ def generate_response(vid_title, vid_desc, question, metric, target_score):
 
 def generate_response_2(vid_title, vid_desc, question, metrics):
     scores_and_desc = ', '.join([f'{metrics[m]}/100, meaning {d}' for m, d in core.metrics.items()])
-
     result = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo", 
                 messages = [{"role": "system", "content" : 
@@ -53,21 +51,26 @@ def populate_all_responses():
     user_models = LearnerModel.objects.all()
     # get videos
     modules = Module.objects.all()
-    for module in modules[45:46]:  # TODO: expand range to add more modules 
+    for module in modules[6:20]:  # TODO: expand range to add more modules 
+        if (module.title.endswith("_advanced")): continue
         video_title = module.video.title
         video_desc = module.video.description
         video_questions = module.video.videoquestion_set.all()
-        for user_model in user_models[:1]:  # TODO: expand range to add more users who respond 
+        for user_model in user_models[:10]:  # TODO: expand range to add more users who respond 
             metrics = {}
             metrics['planner'] = user_model.planner_score
             metrics['guardian'] = user_model.guardian_score
             metrics['mentor'] = user_model.mentor_score
             metrics['motivator'] = user_model.motivator_score
             metrics['assessor'] = user_model.assessor_score
-            print("Video Title: {}\nVideo Desc: {}\nMetrics: {}".format(video_title, video_desc, metrics))
+            print("Video Title: {}\nVideo Desc: {}\nUser: {}\nMetrics: {}".format(video_title, video_desc, user_model.full_name, metrics))
             # create answer for each question
             for q in video_questions:
                 answer = generate_response_2(video_title, video_desc, q.question, metrics)
                 print("Question: {}, Answer: {}".format(q.question, answer))
+                AnswerToVideoQuestion.objects.create(user=user_model.user, video=module.video, question=q, answer=answer)
+        # create module compleition object once all questions are answered
+        ModuleCompletion.objects.create(user=user_model.user, module=module, time_spent=30.0, complete=True)
 
 populate_all_responses()
+
