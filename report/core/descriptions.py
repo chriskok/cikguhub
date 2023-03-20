@@ -1,6 +1,6 @@
 import json
 from main.models import *
-
+from .relevant import get_relevant_answers
 metric_descriptions = {
     "planner": "Teachers act as planners to ensure readiness and thorough preparation in implementing Learning and Facilitation.",
     "guardian": "Teachers act as controllers of class objective implementation to ensure the smoothness of the learning process according to plan.",
@@ -41,7 +41,8 @@ Assesssor: {self.learner_model.assessor_score}
         responses = AnswerToVideoQuestion.objects.filter(user=self.learner_model.user).all()
 
         user_prompt = f"""
-Teacher {self.learner_model.user} has scores {', '.join([f'{m}: {int(getattr(self.learner_model, m + "_score"))}' for m in metric_descriptions])}.
+Teacher {self.learner_model.user} has scores {', '.join([f'{m}: {int(getattr(self.learner_model, m + "_score"))}.' for m in metric_descriptions])}.
+Here are some of their recent replies to questions on videos: {get_relevant_answers(self.learner_model.user)}
 """
 
         result = openai.ChatCompletion.create(
