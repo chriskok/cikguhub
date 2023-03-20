@@ -10,6 +10,8 @@ from main.models import *
 import json
 import numpy as np
 import pandas as pd
+import plotly.express as px
+from plotly.offline import plot
 
 def index(request):
     return render(request, "recs.html")
@@ -313,6 +315,17 @@ def illustrate_cluster(labels, one_hot_df):
         cluster_msgs[f'Cluster {i}'] = msg
     return cluster_msgs
 
+def plotly_strip(df, labels, cluster_msgs, x='experience', y='teaching_level'):
+    df = df.copy()
+    df['cluster'] = labels
+    df['cluster key'] = [cluster_msgs[f'Cluster {i}'] for i in df['cluster']]
+
+    fig = px.strip(data_frame=df, x = "experience", y='teaching_level', color='cluster', 
+               stripmode = "overlay", hover_data=['cluster key'])
+    fig.update_traces({'marker':{'size': 10, 'line':{'width':1}, 'opacity':1}})
+    plt_div = plot(fig, output_type='div')
+    return plt_div
+
 def user_clustering(request, method='kmeans', num_clusters=4):
 
     # df = pd.DataFrame(columns=['teaching_level', 'experience', 'role', 'wanted_skills'])
@@ -338,5 +351,6 @@ def user_clustering(request, method='kmeans', num_clusters=4):
         "cluster_msgs": cluster_msgs,
         "method": method,
         "num_clusters": num_clusters,
+        "plot_div": plotly_strip(one_hot_um, labels, cluster_msgs, x='experience', y='teaching_level'),
     }
     return render(request, "user_clustering.html", context=context)
