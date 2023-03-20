@@ -1,24 +1,35 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block title %} CikguHub - Recommendations {% endblock %}
 
 {% block content %}
+<h1>Competency Progress</h1>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-8">
             {% for id, value in metrics.items %}
-                <h2>{{ value.name }}</h2>
-                <img source="{{value.icon}}">
-                <div class="form-group">
+            <div class="d-flex flex-row justify-content-start align-items-start">
+                <div class="p-2">
+                    <img src="{% static value.icon_url %}" alt="icon for {{value.name}}" width="50" height="50">
+                </div>
+    
+                <div class="p-2" style="flex-grow: 1;">
                     <div class="input-group">
-                        <h3>{{ value.value }}</h3>
-                        <input type="range" class="form-control-range" id="planner" min="0" max="100" value="{{value.value}}" disabled>
+                        <input type="range" class="form-control-range" id="planner" min="0" max="100"
+                            value="{{value.value}}" disabled>
+                        <p>{{ value.value }}</p>
                     </div>
                 </div>
+            </div>
+    
+            <p style="margin-top: -20px;">{{ value.name }}</p>
             {% endfor %}
         </div>
-        <div class="col-md-6">
-            {{ description |safe }}
+    
+        <div class="col-md-4">
+            {{ description }}
         </div>
     </div>
 </div>
