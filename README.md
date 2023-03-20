@@ -24,6 +24,8 @@
 ## Dumping and Loading Data
 #### Dumping
 - `python manage.py dumpdata > dump.json`
+- OR `python manage.py dumpdata --natural-foreign --natural-primary -e contenttypes -e auth.Permission --indent 2 > dump.json`
+
 #### Loading
 - `python manage.py migrate`
 - `python manage.py loaddata dump.json`

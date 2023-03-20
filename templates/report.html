@@ -1,32 +1,26 @@
 {% extends 'base.html' %}
 
-{% block title %} CikguHub - Report {% endblock %}
+{% block title %} CikguHub - Recommendations {% endblock %}
 
 {% block content %}
-
-<main role="main">
-
-    <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="jumbotron">
-        <div class="container">
-            <h1 class="display-3">Report: {{ user.username }}</h1>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            {% for id, value in metrics.items %}
+                <h2>{{ value.name }}</h2>
+                <img source="{{value.icon}}">
+                <div class="form-group">
+                    <div class="input-group">
+                        <h3>{{ value.value }}</h3>
+                        <input type="range" class="form-control-range" id="planner" min="0" max="100" value="{{value.value}}" disabled>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="col-md-6">
+            {{ description |safe }}
         </div>
     </div>
+</div>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-sm col-md-6">
-                <h3>Competencies</h3>
-                <p>Planner: {{ planner_score }}</p>
-                <p>Guardian: {{ guardian_score }}</p>
-                <p>Mentor: {{ mentor_score }}</p>
-                <p>Motivator: {{ motivator_score }}</p>
-                <p>Assessor: {{ assessor_score }}</p>
-            </div>
-            <div class="col-sm col-md-6">
-                <h3>Feedback</h3>
-                <p>{{ learner_model.feedback }}</p>
-            </div>
-        </div>
-    </div>
 {% endblock %}
