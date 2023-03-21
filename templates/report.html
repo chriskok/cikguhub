@@ -1,14 +1,21 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %} CikguHub - Recommendations {% endblock %}
+{% block title %} CikguHub - Report {% endblock %}
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/user_report.css' %}">
-<h1 class="title">Competency Progress</h1>
-<div class="container-fluid">
+
+<!-- Main jumbotron for a primary marketing message or call to action -->
+<div class="jumbotron">
+    <div class="container">
+        <h1 class="display-3">Competency Report</h1>
+    </div>
+</div>
+
+<div class="container">
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-4">
             {% for id, value in metrics.items %}
             <div class="d-flex flex-row justify-content-start align-items-start">
                 <div class="p-2">
@@ -28,12 +35,12 @@
             {% endfor %}
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-8">
             <p>{{ description|safe }}</p>
         </div>
     </div>
+    <a class="button" href="{% url 'recsys:user_recs' %}">Join a class to improve skills!</a>
 </div>
 
-<a class="button" href="{% url 'recsys:user_recs' %}">Join a class to improve skills!</a>
 
 {% endblock %}
