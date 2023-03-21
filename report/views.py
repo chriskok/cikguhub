@@ -15,7 +15,6 @@ def user_report(request):
             m: core.metrics[m].to_view(int(getattr(curr_learner_model, m + "_score")))
             for m in core.metrics
         },
-        # 'description': core.Description(curr_learner_model),
         'description': Feedback.objects.filter(user=curr_learner_model.user).latest('id').feedback,
     }
     return render(request, "report.html", context)
@@ -36,5 +35,10 @@ def expert_report(request, user_id):
         "curr_user": curr_user, 
         "all_users": User.objects.all(),
         "completed_modules": completed_modules,
+        'metrics': {
+            m: core.metrics[m].to_view(int(getattr(curr_learner_model, m + "_score")))
+            for m in core.metrics
+        },
+        'feedback_obj': Feedback.objects.filter(user=curr_learner_model.user).latest('id'),
     }
     return render(request, "report_expert.html", context)
