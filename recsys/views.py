@@ -237,8 +237,6 @@ def user_recs(request):
 def produce_feedback(user):
     feedback_thread = threading.Thread(target=core.Description, name="feedback_creator", args=(LearnerModel.objects.get(user=user),))
     feedback_thread.start()
-    # core.Description(LearnerModel.objects.get(user=user))  # create feedback for the user based on their new answers
-    print(f"Feedback produced for: {user.username}")
 
 def recommended_module(request, module_id):
     curr_module = Module.objects.get(pk=module_id)

@@ -4,6 +4,7 @@
 
 {% block content %}
 {% load report_extras %}
+{% load static %}
 
 <main role="main">
 
@@ -23,66 +24,88 @@
             </div>
 
             <br>
-            <p>Name: {{ learner_model.full_name }}</p>
-            <p>School Level: {{ learner_model.school_level }}</p>
-            <p>Years of Experience: {{ learner_model.years_of_experience }}</p>
-            <p>Role: {{ learner_model.role }}</p>
-            <p>Skill Interests: {{ learner_model.skill_interests }}</p>
-            <p>Additional Interests: {% if learner_model.other_interests %}{{ learner_model.other_interests }}{% else %}N/A{% endif %}</p>
-            <p>Completed Modules: {{ completed_modules.count }}</p>
-
-            {% if completed_modules.count > 0 %}
-            <p>
-                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                    Completed Module Details
-                </button>
-            </p>
-            <div class="collapse" id="collapseExample">
-                {% for m in completed_modules %}
-                <div class="card mb-2">
-                    <h5 class="card-header">{{ m.module.title }}</h5>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-sm col-md-3">
-                                <div class="embed-responsive embed-responsive-16by9">
-                                    <iframe class="embed-responsive-item" src="{{ m.module.video.url }}" allowfullscreen></iframe>
-                                </div>
-                            </div>
-                            <div class="col-sm col-md-8">
-                                <ul>
-                                    {% for q in m.module.questions.all %}
-                                    <li>{{ q.question }}</li>
-                                    <ul>
-                                        <li>{{ q.answertovideoquestion_set | by_user:curr_user | get_first_answer }}</li>
-                                    </ul>
-                                    {% endfor %}
-                                </ul>
-                                <br>
-                                <p>Time Spent (seconds): {{ m.time_spent }} </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-            {% else %}{% endif %}
+            
         </div>
     </div>
 
     <div class="container">
         <div class="row">
-            <div class="col-sm col-md-6">
-                <h3>Competencies</h3>
-                <p>Planner: {{ learner_model.planner_score|floatformat:"0" }}</p>
-                <p>Guardian: {{ learner_model.guardian_score|floatformat:"0" }}</p>
-                <p>Mentor: {{ learner_model.mentor_score|floatformat:"0" }}</p>
-                <p>Motivator: {{ learner_model.motivator_score|floatformat:"0" }}</p>
-                <p>Assessor: {{ learner_model.assessor_score|floatformat:"0" }}</p>
+            <div class="col-sm col-md-4">
+                <h3 class="mb-4">Competencies</h3>
+                {% for id, value in metrics.items %}
+                <div class="d-flex flex-row justify-content-start align-items-start">
+                    <div class="p-2">
+                        <img src="{% static value.icon_url %}" alt="icon for {{value.name}}" width="50" height="50">
+                    </div>
+    
+                    <div class="p-2" style="flex-grow: 1;">
+                        <div class="input-group">
+                            <input type="range" class="form-control-range" id="planner" min="0" max="100"
+                                value="{{value.value}}" disabled>
+                            <p>{{ value.value }}</p>
+                        </div>
+                    </div>
+                </div>
+    
+                <p style="margin-top: -20px;">{{ value.name }}</p>
+                {% endfor %}
             </div>
-            <div class="col-sm col-md-6">
-                <h3>Feedback</h3>
-                <p>{{ learner_model.feedback }}</p>
+            <div class="col-sm col-md-8">
+                <h3 class="mb-4">Feedback</h3>
+                <p>{{ feedback_obj.feedback|safe }}</p>
+    
+                <p><b>Human Approved:</b> {{ feedback_obj.human_approved }}</p>
+                
+                <div class="row">
+                    <button type="button" class="btn btn-light ml-3">Edit</button>
+                    <button type="button" class="btn btn-success ml-2 ">Approve</button>
+                </div>
             </div>
         </div>
+
+        <h3 class="my-3">Additional Information</h3>
+        <p>Name: {{ learner_model.full_name }}</p>
+        <p>School Level: {{ learner_model.school_level }}</p>
+        <p>Years of Experience: {{ learner_model.years_of_experience }}</p>
+        <p>Role: {{ learner_model.role }}</p>
+        <p>Skill Interests: {{ learner_model.skill_interests }}</p>
+        <p>Additional Interests: {% if learner_model.other_interests %}{{ learner_model.other_interests }}{% else %}N/A{% endif %}</p>
+        <p>Completed Modules: {{ completed_modules.count }}</p>
+
+        {% if completed_modules.count > 0 %}
+        <p>
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                Completed Module Details
+            </button>
+        </p>
+        <div class="collapse" id="collapseExample">
+            {% for m in completed_modules %}
+            <div class="card mb-2">
+                <h5 class="card-header">{{ m.module.title }}</h5>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm col-md-3">
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <iframe class="embed-responsive-item" src="{{ m.module.video.url }}" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                        <div class="col-sm col-md-8">
+                            <ul>
+                                {% for q in m.module.questions.all %}
+                                <li>{{ q.question }}</li>
+                                <ul>
+                                    <li>{{ q.answertovideoquestion_set | by_user:curr_user | get_first_answer }}</li>
+                                </ul>
+                                {% endfor %}
+                            </ul>
+                            <br>
+                            <p>Time Spent (seconds): {{ m.time_spent }} </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}{% endif %}
     </div>
 {% endblock %}

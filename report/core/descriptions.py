@@ -81,6 +81,8 @@ However, your scores of 20 in Planner and 5 in Motivator indicate that <b>you ne
             assessor_score = self.learner_model.assessor_score,
         )
 
+        print('Feedback created for: {}'.format(self.learner_model.full_name))
+
         return result.choices[0].message.content + f"<br><br><br>DEBUG: {relevant_responses}"
 
     def __str__(self):
