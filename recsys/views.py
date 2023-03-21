@@ -6,8 +6,11 @@ from sklearn.cluster import KMeans, AgglomerativeClustering, SpectralClustering
 
 from .forms import *
 from main.models import *
+from report import core
 
 import json
+import asyncio
+import threading
 import numpy as np
 import pandas as pd
 import plotly.express as px
@@ -231,6 +234,12 @@ def user_recs(request):
 
     return render(request, "recs.html", context=context)
 
+def produce_feedback(user):
+    feedback_thread = threading.Thread(target=core.Description, name="feedback_creator", args=(LearnerModel.objects.get(user=user),))
+    feedback_thread.start()
+    # core.Description(LearnerModel.objects.get(user=user))  # create feedback for the user based on their new answers
+    print(f"Feedback produced for: {user.username}")
+
 def recommended_module(request, module_id):
     curr_module = Module.objects.get(pk=module_id)
     no_of_questions = curr_module.questions.count()
@@ -246,12 +255,15 @@ def recommended_module(request, module_id):
         form = curr_form(request.POST)
         # check whether it's valid:
         if form.is_valid():
+            # create new answer objects per answer
             for count, question in enumerate(curr_module.questions.all()):
                 curr_answer = form.cleaned_data['answer{}'.format(count+1)]
                 AnswerToVideoQuestion.objects.create(user=request.user, video=curr_module.video, question=question, answer=curr_answer)
+
             # TODO: add form input for feedback rating and feedback
             ModuleCompletion.objects.create(user = request.user, module = curr_module, time_spent = 30.0, complete = True, feedback_rating = 3.5, feedback='Good!')
-            produce_recommendations(request.user)
+            produce_recommendations(request.user)           # create new recommendation set for the user
+            produce_feedback(request.user)     # create feedback for the user based on their new answers
             messages.info(request, "You completed: {}!".format(curr_module.title))
             return redirect("recsys:user_recs")
     else:
