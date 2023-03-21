@@ -20,7 +20,9 @@ try:
             openai_enabled = True
     else:
         openai_key = os.getenv("OPENAI_KEY")
-        if (openai_key): openai.api_key = openai_key
+        if (openai_key): 
+            openai.api_key = openai_key
+            openai_enabled = True
         else:
             openai_api_key = None
             message = "No OpenAI API key found. Please add one to api_keys.json."
