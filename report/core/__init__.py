@@ -30,5 +30,3 @@ metrics = {
         "img/assessor.png",
     ),
 }
-
-print("core loaded")

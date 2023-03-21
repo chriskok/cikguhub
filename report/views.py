@@ -15,7 +15,8 @@ def user_report(request):
             m: core.metrics[m].to_view(int(getattr(curr_learner_model, m + "_score")))
             for m in core.metrics
         },
-        'description': core.Description(curr_learner_model),
+        # 'description': core.Description(curr_learner_model),
+        'description': Feedback.objects.filter(user=curr_learner_model.user).latest('id').feedback,
     }
     return render(request, "report.html", context)
 
