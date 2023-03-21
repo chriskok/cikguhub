@@ -1,4 +1,5 @@
 import json
+import os
 from main.models import *
 from .relevant import get_relevant_answers
 metric_descriptions = {
@@ -11,12 +12,18 @@ metric_descriptions = {
 openai_enabled = False
 
 try:
-    with open('api_keys.json', 'r') as f:
-        import openai
-        api_keys = json.load(f)
-        openai.api_key = api_keys['openai']
-        openai_enabled = True
-
+    import openai
+    if (os.path.isfile('api_keys.json')):
+        with open('api_keys.json', 'r') as f:
+            api_keys = json.load(f)
+            openai.api_key = api_keys['openai']
+            openai_enabled = True
+    else:
+        openai_key = os.getenv("OPENAI_KEY")
+        if (openai_key): openai.api_key = openai_key
+        else:
+            openai_api_key = None
+            message = "No OpenAI API key found. Please add one to api_keys.json."
 except:
     openai_api_key = None
     message = "No OpenAI API key found. Please add one to api_keys.json."
