@@ -76,10 +76,10 @@
                 </li>
                 {% else %}
                 <li class="nav-item">
-                  <a class="nav-link" href="{% url 'recsys:user_recs' %}">Recommendation System</a>
+                  <a class="nav-link {% if request.resolver_match.app_name == 'recsys' %}active{% endif %}" href="{% url 'recsys:user_recs' %}">Recommendation System</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{% url 'report:user_report' %}">Report Generation</a>
+                  <a class="nav-link {% if request.resolver_match.app_name == 'report' %}active{% endif %}" href="{% url 'report:user_report' %}">Report Generation</a>
                 </li>
                 {% endif %}
                 <li class="nav-item">
