@@ -54,11 +54,12 @@
                 <h3 class="mb-4">Feedback</h3>
                 <p>{{ feedback_obj.feedback|safe }}</p>
     
+                <p><b>Human Edited:</b> {{ feedback_obj.human_edited }}</p>
                 <p><b>Human Approved:</b> {{ feedback_obj.human_approved }}</p>
                 
                 <div class="row">
                     <a role="button" class="btn btn-light ml-3" href="{% url 'report:update_feedback' feedback_obj.id %}">Edit</a>
-                    <a role="button" class="btn btn-success ml-2 ">Approve</a>
+                    <a role="button" class="btn btn-{% if feedback_obj.human_approved %}danger{% else %}success{% endif %} ml-2 " href="{% url 'report:approve_feedback' feedback_obj.id %}">{% if feedback_obj.human_approved %}Unapprove{% else %}Approve{% endif %}</a>
                 </div>
             </div>
         </div>

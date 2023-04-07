@@ -46,6 +46,17 @@ def expert_report(request, user_id):
     }
     return render(request, "report_expert.html", context)
 
+def approve_feedback(request, feedback_id):
+    curr_fb = Feedback.objects.get(pk=feedback_id)
+    
+    if (curr_fb.human_approved):
+        curr_fb.human_approved = False
+    else:
+        curr_fb.human_approved = True
+    curr_fb.save()
+
+    return expert_report(request, curr_fb.user.id)
+
 class FeedbackUpdateView(SuccessMessageMixin, UpdateView):
     model = Feedback
     fields = ['feedback', "planner_score", "guardian_score", "mentor_score", "motivator_score", "assessor_score"]
