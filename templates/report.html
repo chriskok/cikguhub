@@ -10,6 +10,19 @@
 <div class="jumbotron">
     <div class="container">
         <h1 class="display-3">Competency Report</h1>
+
+        {% if user.is_superuser %}
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Switch User
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                {% for u in all_users %}
+                <a class="dropdown-item" href="{% url 'report:user_report' u.id %}">{{u.username}}</a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
     </div>
 </div>
 

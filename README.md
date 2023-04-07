@@ -19,7 +19,9 @@
 - `python manage.py runserver --insecure`
 - temporarily using user: 'admin', pass: 'cikgupass'
 - NOTE: if you're running the system locally, you'll need to set:
-    - environment variable: `set DEVELOPMENT_MODE=True` or `export DEVELOPMENT_MODE=True` (on MacOS)
+    - environment variables: 
+        - On Windows: `set DEVELOPMENT_MODE=True` & `set DEBUG=True` 
+        - On MacOS: `export DEVELOPMENT_MODE=True` & `export DEBUG=True`
 
 ## Dumping and Loading Data
 #### Dumping

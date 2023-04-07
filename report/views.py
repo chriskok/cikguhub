@@ -10,15 +10,21 @@ from . import core
 def index(request):
     return render(request, "report.html")
 
-def user_report(request):
-    curr_learner_model = LearnerModel.objects.get(user=request.user)
+def user_report(request, user_id=0):
+
+    if (user_id): curr_user = User.objects.get(pk=user_id)
+    else: curr_user = request.user
+
+    curr_learner_model = LearnerModel.objects.get(user=curr_user)
+    curr_feedback = Feedback.objects.filter(user=curr_learner_model.user).latest('id').feedback if Feedback.objects.filter(user=curr_learner_model.user).exists() else None
     context = {
         'learner_model': curr_learner_model,
         'metrics': {
             m: core.metrics[m].to_view(int(getattr(curr_learner_model, m + "_score")))
             for m in core.metrics
         },
-        'description': Feedback.objects.filter(user=curr_learner_model.user).latest('id').feedback,
+        'description': curr_feedback,
+        "all_users": User.objects.all(),
     }
     return render(request, "report.html", context)
 

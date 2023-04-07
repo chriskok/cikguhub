@@ -47,7 +47,7 @@
                         Recommendation System
                     </a>
                     <div class="dropdown-menu" aria-labelledby="recsysMenu">
-                        <a class="dropdown-item" href="{% url 'recsys:user_recs' %}">User</a>
+                        <a class="dropdown-item" href="{% url 'recsys:user_recs' %}">User Preview</a>
                         <a class="dropdown-item" href="{% url 'recsys:expert_recs' 0 %}">Expert</a>
                         <a class="dropdown-item" href="{% url 'recsys:user_clustering' %}">User Clustering</a>
                     </div>
@@ -57,7 +57,7 @@
                         Report Generation
                     </a>
                     <div class="dropdown-menu" aria-labelledby="reportMenu">
-                        <a class="dropdown-item" href="{% url 'report:user_report' %}">User</a>
+                        <a class="dropdown-item" href="{% url 'report:user_report' %}">User Preview</a>
                         <a class="dropdown-item" href="{% url 'report:expert_report' 0 %}">Expert</a>
                     </div>
                 </li>
