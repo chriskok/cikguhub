@@ -203,17 +203,20 @@ def produce_recommendations(user):
 #           WEBPAGES           #
 ################################
 
-def user_recs(request):
+def user_recs(request, user_id=0):
 
-    if (not RecommendationQueue.objects.filter(user=request.user).exists()):
-        produce_recommendations(request.user)
+    if (user_id): curr_user = User.objects.get(pk=user_id)
+    else: curr_user = request.user
 
-    recommended_ids = json.loads(RecommendationQueue.objects.get(user=request.user).list_of_ids)
+    if (not RecommendationQueue.objects.filter(user=curr_user).exists()):
+        produce_recommendations(curr_user)
+
+    recommended_ids = json.loads(RecommendationQueue.objects.get(user=curr_user).list_of_ids)
     if len(recommended_ids) > 0:
         recommended_id = recommended_ids[0]
         # get list of completed modules and add to context (to filter out)
-        completed_modules = list(request.user.modulecompletion_set.all().values_list('module__id', flat=True))  
-        completed_videos = list(request.user.modulecompletion_set.all().values_list('module__video__id', flat=True))  
+        completed_modules = list(curr_user.modulecompletion_set.all().values_list('module__id', flat=True))  
+        completed_videos = list(curr_user.modulecompletion_set.all().values_list('module__video__id', flat=True))  
         curr_series = Series.objects.get(pk=recommended_id)
         curr_video = curr_series.video_set.order_by('series_order').exclude(id__in=completed_videos).first()
         curr_module = curr_video.module_set.first()
@@ -232,6 +235,7 @@ def user_recs(request):
     else:
         context = {"series": None, "module": None, "series2": None, "module2": None, "completed_modules": []}
 
+    context['all_users'] = User.objects.all()
     return render(request, "recs.html", context=context)
 
 def produce_feedback(user):
