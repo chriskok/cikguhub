@@ -76,4 +76,11 @@ class FeedbackUpdateView(SuccessMessageMixin, UpdateView):
         self.object.human_edited = True
         self.object.human_approved = True
         self.object.save()
+
+        self.object.user.learnermodel.planner_score = self.object.planner_score
+        self.object.user.learnermodel.guardian_score = self.object.guardian_score
+        self.object.user.learnermodel.mentor_score = self.object.mentor_score
+        self.object.user.learnermodel.motivator_score = self.object.motivator_score
+        self.object.user.learnermodel.assessor_score = self.object.assessor_score
+        self.object.user.learnermodel.save()
         return super().form_valid(form) 
