@@ -46,7 +46,6 @@ def expert_report(request, user_id):
 
     curr_learner_model = LearnerModel.objects.get(user=curr_user)
     completed_modules = ModuleCompletion.objects.filter(user=curr_user).all()
-    print("CHECK KEN: ", Feedback.objects.count(), Feedback.objects.filter(user=curr_learner_model.user).count())
     context = {
         "learner_model": curr_learner_model,
         "curr_user": curr_user,

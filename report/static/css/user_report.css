@@ -15,3 +15,7 @@
 .title {
     text-align: center;
 }
+
+.tooltip-content-text {
+    text-align: left;
+}

@@ -9,7 +9,6 @@ class Metric:
 
     def to_view(self, val):
         # We want to show different descriptions in different value ranges
-        print("CHECK KEN: to_view ran!")
         selected_description = ""
         if val <= 33:
             selected_description = self.description_beginner
@@ -18,7 +17,7 @@ class Metric:
         else:
             selected_description = self.description_master
 
-        tooltip = "Definition:\n{}\n\nYour score means:\n{}".format(self.definition, selected_description)
+        tooltip = '<p class="tooltip-content-text"><b>Definition:</b><br> {} <br><br><b>Your score means:</b><br>{}</p>'.format(self.definition, selected_description)
 
         return {
             'name': self.name,
