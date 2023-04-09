@@ -33,7 +33,7 @@
             {% for id, value in metrics.items %}
             <div class="d-flex flex-row justify-content-start align-items-start">
                 <div class="p-2">
-                    <img src="{% static value.icon_url %}" alt="icon for {{value.name}}" width="50" height="50">
+                    <img src="{% static value.icon_url %}" alt="icon for {{value.name}}" width="50" height="50" data-toggle="tooltip" data-placement="right" title="{{value.tooltip}}"> 
                 </div>
 
                 <div class="p-2" style="flex-grow: 1;">
@@ -56,6 +56,12 @@
     </div>
     <a class="button" href="{% url 'recsys:user_recs' %}">Join a class to improve skills!</a>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip({ html: true });
+    });
+</script>
 
 
 {% endblock %}

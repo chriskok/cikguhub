@@ -32,7 +32,7 @@ def generate_response(vid_title, vid_desc, question, metric, target_score):
     return result.choices[0].message.content
 
 def generate_response_2(vid_title, vid_desc, question, metrics):
-    scores_and_desc = ', '.join([f'{metrics[m]}/100 for {d.name}, meaning {d.description}' for m, d in core.metrics.items()])
+    scores_and_desc = ', '.join([f'{metrics[m]}/100 for {d.name}, meaning you: {d.definition}' for m, d in core.metrics.items()])
 
     result = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo", 

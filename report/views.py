@@ -7,13 +7,17 @@ from main.models import *
 import datetime
 from . import core
 
+
 def index(request):
     return render(request, "report.html")
 
+
 def user_report(request, user_id=0):
 
-    if (user_id): curr_user = User.objects.get(pk=user_id)
-    else: curr_user = request.user
+    if (user_id):
+        curr_user = User.objects.get(pk=user_id)
+    else:
+        curr_user = request.user
 
     curr_learner_model = LearnerModel.objects.get(user=curr_user)
     curr_feedback = Feedback.objects.filter(user=curr_learner_model.user).latest('id').feedback if Feedback.objects.filter(user=curr_learner_model.user).exists() else None
@@ -28,20 +32,23 @@ def user_report(request, user_id=0):
     }
     return render(request, "report.html", context)
 
+
 def expert_report(request, user_id):
     # TODO: figure out what best to show the expert user to make decisions
     # TODO: maybe we can use AI to generate the summary of feedback first, and have human look over
     # TODO: maybe we can use AI to select the best answers that show growth in specific competencies -> highlight that for experts
 
     # Get the user in question
-    if (user_id == 0): curr_user = User.objects.first()
-    else: curr_user = User.objects.get(pk=user_id)
+    if (user_id == 0):
+        curr_user = User.objects.first()
+    else:
+        curr_user = User.objects.get(pk=user_id)
 
     curr_learner_model = LearnerModel.objects.get(user=curr_user)
     completed_modules = ModuleCompletion.objects.filter(user=curr_user).all()
     context = {
-        "learner_model": curr_learner_model, 
-        "curr_user": curr_user, 
+        "learner_model": curr_learner_model,
+        "curr_user": curr_user,
         "all_users": User.objects.all(),
         "completed_modules": completed_modules,
         'metrics': {
@@ -52,9 +59,10 @@ def expert_report(request, user_id):
     }
     return render(request, "report_expert.html", context)
 
+
 def approve_feedback(request, feedback_id):
     curr_fb = Feedback.objects.get(pk=feedback_id)
-    
+
     if (curr_fb.human_approved):
         curr_fb.human_approved = False
     else:
@@ -62,6 +70,7 @@ def approve_feedback(request, feedback_id):
     curr_fb.save()
 
     return expert_report(request, curr_fb.user.id)
+
 
 class FeedbackUpdateView(SuccessMessageMixin, UpdateView):
     model = Feedback
@@ -83,4 +92,4 @@ class FeedbackUpdateView(SuccessMessageMixin, UpdateView):
         self.object.user.learnermodel.motivator_score = self.object.motivator_score
         self.object.user.learnermodel.assessor_score = self.object.assessor_score
         self.object.user.learnermodel.save()
-        return super().form_valid(form) 
+        return super().form_valid(form)

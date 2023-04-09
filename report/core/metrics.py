@@ -1,13 +1,27 @@
 class Metric:
-    def __init__(self, name, description, icon_url):
+    def __init__(self, name, icon_url, description_beginner, description_intermediate, description_master, definition):
         self.name = name
-        self.description = description
         self.icon_url = icon_url
+        self.description_beginner = description_beginner
+        self.description_intermediate = description_intermediate
+        self.description_master = description_master
+        self.definition = definition
 
     def to_view(self, val):
+        # We want to show different descriptions in different value ranges
+        selected_description = ""
+        if val <= 33:
+            selected_description = self.description_beginner
+        elif val <= 66:
+            selected_description = self.description_intermediate
+        else:
+            selected_description = self.description_master
+
+        tooltip = '<p class="tooltip-content-text"><b>Definition:</b><br> {} <br><br><b>Your score means:</b><br>{}</p>'.format(self.definition, selected_description)
+
         return {
             'name': self.name,
-            'description': self.description,
+            'tooltip': tooltip,
             'icon_url': self.icon_url,
             'value': val
         }
