@@ -33,7 +33,7 @@
             {% for id, value in metrics.items %}
             <div class="d-flex flex-row justify-content-start align-items-start">
                 <div class="p-2">
-                    <img src="{% static value.icon_url %}" alt="icon for {{value.name}}" width="50" height="50">
+                    <img src="{% static value.icon_url %}" alt="icon for {{value.name}}" width="50" height="50" title="{{value.tooltip}}">
                 </div>
 
                 <div class="p-2" style="flex-grow: 1;">
