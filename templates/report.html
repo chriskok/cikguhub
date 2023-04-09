@@ -4,9 +4,6 @@
 {% block title %} CikguHub - Report {% endblock %}
 
 {% block content %}
-{% load bootstrap5 %}
-{% bootstrap_css %}
-{% bootstrap_javascript %}
 <link rel="stylesheet" href="{% static 'css/user_report.css' %}">
 
 <!-- Main jumbotron for a primary marketing message or call to action -->
@@ -36,7 +33,7 @@
             {% for id, value in metrics.items %}
             <div class="d-flex flex-row justify-content-start align-items-start">
                 <div class="p-2">
-                    <img src="{% static value.icon_url %}" alt="icon for {{value.name}}" width="50" height="50" data-toggle="tooltip" data-placement="top" title="{{value.tooltip}}"> 
+                    <img src="{% static value.icon_url %}" alt="icon for {{value.name}}" width="50" height="50" data-toggle="tooltip" data-placement="right" title="{{value.tooltip}}"> 
                 </div>
 
                 <div class="p-2" style="flex-grow: 1;">
