@@ -340,28 +340,15 @@ def plotly_strip(df, labels, cluster_msgs, x='experience', y='teaching_level'):
     plt_div = plot(fig, output_type='div')
     return plt_div
 
-def user_clustering(request, method='kmeans', num_clusters=4):
+def user_clustering(request, method='kmeans', num_clusters=4, features='roles_T,teaching,experience'):
 
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        print(request.POST)
+        new_features = request.POST.getlist('feature_select')
 
-        return redirect('recsys:user_clustering', method=request.POST['methodSelect'], num_clusters=int(request.POST['numSelect']))
-
-        # check whether it's valid:
-        # if form.is_valid():
-        #     # create new answer objects per answer
-        #     for count, question in enumerate(curr_module.questions.all()):
-        #         curr_answer = form.cleaned_data['answer{}'.format(count+1)]
-        #         AnswerToVideoQuestion.objects.create(user=request.user, video=curr_module.video, question=question, answer=curr_answer)
-
-        #     # TODO: add form input for feedback rating and feedback
-        #     ModuleCompletion.objects.create(user = request.user, module = curr_module, time_spent = 30.0, complete = True, feedback_rating = 3.5, feedback='Good!')
-        #     produce_recommendations(request.user)           # create new recommendation set for the user
-        #     produce_feedback(request.user)     # create feedback for the user based on their new answers
-        #     messages.info(request, "You completed: {}!".format(curr_module.title))
-        #     return redirect("recsys:user_recs")
+        if (len(new_features) == 0): new_features='roles_T,teaching,experience'
+        else: new_features = ','.join(new_features)
+        return redirect('recsys:user_clustering', method=request.POST['methodSelect'], num_clusters=int(request.POST['numSelect']), features=new_features)
 
     # df = pd.DataFrame(columns=['teaching_level', 'experience', 'role', 'wanted_skills'])
     df = pd.DataFrame(list(LearnerModel.objects.all().values('school_level', 'years_of_experience', 'role', 'skill_interests')))
@@ -376,8 +363,8 @@ def user_clustering(request, method='kmeans', num_clusters=4):
     user_model['teaching_level'] = coded_level1
     one_hot_um = one_hot_encoding(user_model)
 
-    features = ['roles_T', 'teaching', 'experience']
-    X = np.array(one_hot_um[features])
+    split_features = features.split(',')
+    X = np.array(one_hot_um[split_features])
     labels = clustering(X, num_clusters, method)
     cluster_msgs = illustrate_cluster(labels, one_hot_um)
 
@@ -388,5 +375,6 @@ def user_clustering(request, method='kmeans', num_clusters=4):
         "method": method,
         "num_clusters": num_clusters,
         "plot_div": plotly_strip(one_hot_um, labels, cluster_msgs, x='experience', y='teaching_level'),
+        "features": split_features,
     }
     return render(request, "user_clustering.html", context=context)
