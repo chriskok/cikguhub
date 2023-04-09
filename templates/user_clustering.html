@@ -18,24 +18,97 @@
 
 
 <div class="container">
-  <div class="form-group">
-    <label for="numSelect">Number of Clusters</label>
-    <select class="form-control" id="numSelect" onchange="location = this.value;">
-      {% for i in '3456789'|make_list %}
-      <option value="{% url 'recsys:user_clustering' method i %}" {% if i == num_clusters|stringformat:"i" %}selected{% endif %}>{{ i }}</option>
-      {% endfor %}
-    </select>
-  </div>
-  
-  <div class="form-group">
-    <label for="methodSelect">Clustering Method</label>
-    <select class="form-control" id="methodSelect" onchange="location = this.value;">
-      <option value="{% url 'recsys:user_clustering' 'kmeans' num_clusters %}" {% if method == "kmeans" %}selected{% endif %}>K-Means</option>
-      <option value="{% url 'recsys:user_clustering' 'agglomerative' num_clusters %}" {% if method == "agglomerative" %}selected{% endif %}>Agglomerative</option>
-      <option value="{% url 'recsys:user_clustering' 'spectral' num_clusters %}" {% if method == "spectral" %}selected{% endif %}>Spectral</option>
-    </select>
-  </div>
+  <form action="{% url 'recsys:user_clustering' %}" method="post">
+    {% csrf_token %}
+    <div class="row">
+      <div class = "col-6"> 
+        <div class="form-group">
+          <label for="numSelect">Number of Clusters</label>
+          <select class="form-control" id="numSelect" name="numSelect">
+            {% for i in '3456789'|make_list %}
+            <option value="{{i}}" {% if i == num_clusters|stringformat:"i" %}selected{% endif %}>{{ i }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="methodSelect">Clustering Method</label>
+          <select class="form-control" id="methodSelect" name="methodSelect">
+            <option value="kmeans" {% if method == "kmeans" %}selected{% endif %}>K-means clustering: Iteratively divides teachers into groups based on similarities in characteristics.</option>
+            <option value="agglomerative" {% if method == "agglomerative" %}selected{% endif %}>Agglomerative clustering: Merges similar teacher groups until a desired number is obtained.</option>
+            <option value="spectral" {% if method == "spectral" %}selected{% endif %}>Spectral clustering: Graph-based approach that will divide teachers based on their closeness in this HD space.</option>
+          </select>
+        </div>
+      </div>
 
+      <div class = "col-6"> 
+        <p>What features to consider when clustering?</p>
+        <div class="row">
+          <div class = "col-6"> 
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" value="experience">Years of Experience
+              </label>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" value="teaching_level">School Level
+              </label>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" value="teaching">Teaching Interest
+              </label>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" value="coaching">Coaching Interest
+              </label>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" value="leadership">Leadership Interest
+              </label>
+            </div>
+          </div>
+          <div class = "col-6"> 
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" value="digital">Digital Interest
+              </label>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" value="multimedia">Multimedia Interest
+              </label>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" value="roles_T">Teacher Role
+              </label>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" value="roles_P">Panel Head Role
+              </label>
+            </div>
+            <div class="form-check">
+              <label class="form-check-label">
+                <input type="checkbox" class="form-check-input" value="roles_O">Officer Role
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class = "col-3"> 
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Cluster</button>
+  </form>
+</div>
+
+<div class="container">
   
   <div class="card-container" style="display: flex; flex-wrap: wrap;">
     {% for key,value in cluster_msgs.items %}
@@ -58,7 +131,6 @@
 
 
   <br>
-
   {% autoescape off %}
   {{ plot_div }}
   {% endautoescape %}
