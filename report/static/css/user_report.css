@@ -15,3 +15,11 @@
 .title {
     text-align: center;
 }
+
+.tooltip-content-text {
+    text-align: left;
+}
+
+.tooltip-inner {
+    max-width: 500px;
+}

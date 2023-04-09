@@ -1,17 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
-    
+from django.core.validators import MaxValueValidator, MinValueValidator
+
 class Feedback(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     feedback = models.TextField(max_length=4096, null=True, blank=True)
     human_approved = models.BooleanField(default=False)
     human_edited = models.BooleanField(default=False)
 
-    planner_score = models.FloatField(default=0.0)
-    guardian_score = models.FloatField(default=0.0)
-    mentor_score = models.FloatField(default=0.0)
-    motivator_score = models.FloatField(default=0.0)
-    assessor_score = models.FloatField(default=0.0)
+    planner_score = models.FloatField(default=0.0, validators=[MinValueValidator(0.0), MaxValueValidator(100.0)])
+    guardian_score = models.FloatField(default=0.0, validators=[MinValueValidator(0.0), MaxValueValidator(100.0)])
+    mentor_score = models.FloatField(default=0.0, validators=[MinValueValidator(0.0), MaxValueValidator(100.0)])
+    motivator_score = models.FloatField(default=0.0, validators=[MinValueValidator(0.0), MaxValueValidator(100.0)])
+    assessor_score = models.FloatField(default=0.0, validators=[MinValueValidator(0.0), MaxValueValidator(100.0)])
 
     def __str__(self):
         return "{}. {}".format(str(self.id), self.user)

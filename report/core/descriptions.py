@@ -20,7 +20,7 @@ try:
             openai_enabled = True
     else:
         openai_key = os.getenv("OPENAI_KEY")
-        if (openai_key): 
+        if (openai_key):
             openai.api_key = openai_key
             openai_enabled = True
         else:
@@ -29,6 +29,7 @@ try:
 except:
     openai_api_key = None
     message = "No OpenAI API key found. Please add one to api_keys.json."
+
 
 class Description:
     def __init__(self, learner_model):
@@ -54,31 +55,31 @@ Here are some of their recent replies to questions on videos: {relevant_response
 """
 
         result = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo", 
-            messages = [{"role": "system", "content" : 
-f"""You are an expert teacher trainer writing feedback for teachers learning how to be {', '.join([f'{m}, meaning {d}' for m, d in metric_descriptions.items()])}. You are given a learner's name and their scores out of 100 on each of the five competencies. You are asked to write a description of the learner that highlights their strengths and weaknesses, mentioning specific responses that they gave on assignments."""},
-            {"role": "user", "content" : 
-"""Teacher Christopher Kok has scores Planner: 20, Guardian: 60, Mentor: 70, Motivator: 5, Assessor: 90. He recently wrote on a Planning assignment that 'I don't think planning really matters, I just like to wing it', on a Guardian assignment that 'I believe in encouraging positive student leadership and taking a back seat on guardianship', on a Mentor assignment that 'I thoroughly evaluate students and give them quality feedback', on a Motivator assignment that 'I don't think motivation is really important, in fact I try to make my students upset as often as possible.', and on an Assessor assignment that 'I believe in giving students a lot of feedback and letting them self-assess'."""},
-            {"role": "assistant", "content" : 
-"""As a teacher, you have strengths in some areas and need to improve in others. Your scores in the competencies of Planner, Guardian, Mentor, Motivator, and Assessor indicate that you are strong in assessing students and providing quality feedback. However, you scored low in planning and motivating students.
+            model="gpt-3.5-turbo",
+            messages=[{"role": "system", "content":
+                       f"""You are an expert teacher trainer writing feedback for teachers learning how to be {', '.join([f'{m}, meaning {d}' for m, d in metric_descriptions.items()])}. You are given a learner's name and their scores out of 100 on each of the five competencies. You are asked to write a description of the learner that highlights their strengths and weaknesses, mentioning specific responses that they gave on assignments."""},
+                      {"role": "user", "content":
+                       """Teacher Christopher Kok has scores Planner: 20, Guardian: 60, Mentor: 70, Motivator: 5, Assessor: 90. He recently wrote on a Planning assignment that 'I don't think planning really matters, I just like to wing it', on a Guardian assignment that 'I believe in encouraging positive student leadership and taking a back seat on guardianship', on a Mentor assignment that 'I thoroughly evaluate students and give them quality feedback', on a Motivator assignment that 'I don't think motivation is really important, in fact I try to make my students upset as often as possible.', and on an Assessor assignment that 'I believe in giving students a lot of feedback and letting them self-assess'."""},
+                      {"role": "assistant", "content":
+                       """As a teacher, you have strengths in some areas and need to improve in others. Your scores in the competencies of Planner, Guardian, Mentor, Motivator, and Assessor indicate that you are strong in assessing students and providing quality feedback. However, you scored low in planning and motivating students.
 
 Your score of 90 in the Assessor competency shows that <b>you are dedicated to helping your students improve by providing them with feedback and encouraging self-assessment.</b> You scored 60 in Guardian and 70 in Mentor, demonstrating your <b>commitment to empowering your students to take responsibility for their own learning and helping them master knowledge and skills</b>.
 
 However, your scores of 20 in Planner and 5 in Motivator indicate that <b>you need to work on your planning and motivational skills</b>. Your response to the Planning assignment suggests that <b>you don't think planning really matters and prefer to wing it, which is a concerning attitude for a teacher</b>. In your Motivator assignment, you stated that <b>you don't think motivation is important and even try to make your students upset, which is a major weakness as motivating students is a key aspect of teaching.</b>"""},
-            {"role": "user", "content" : user_prompt}]
+                      {"role": "user", "content": user_prompt}]
         )
 
-        # Create feedback object 
+        # Create feedback object
         Feedback.objects.create(
-            user = self.learner_model.user,
-            feedback = result.choices[0].message.content,
-            human_approved = False,
-            human_edited = False,
-            planner_score = self.learner_model.planner_score,
-            guardian_score = self.learner_model.guardian_score,
-            mentor_score = self.learner_model.mentor_score,
-            motivator_score = self.learner_model.motivator_score,
-            assessor_score = self.learner_model.assessor_score,
+            user=self.learner_model.user,
+            feedback=result.choices[0].message.content,
+            human_approved=False,
+            human_edited=False,
+            planner_score=self.learner_model.planner_score,
+            guardian_score=self.learner_model.guardian_score,
+            mentor_score=self.learner_model.mentor_score,
+            motivator_score=self.learner_model.motivator_score,
+            assessor_score=self.learner_model.assessor_score,
         )
 
         print('Feedback created for: {}'.format(self.learner_model.full_name))
