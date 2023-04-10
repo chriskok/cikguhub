@@ -10,4 +10,5 @@ urlpatterns = [
     path("expert_report/<int:user_id>/", login_required(views.expert_report), name="expert_report"),
     path("update_feedback/<pk>", login_required(views.FeedbackUpdateView.as_view()), name="update_feedback"),
     path("approve_feedback/<int:feedback_id>", login_required(views.approve_feedback), name="approve_feedback"),
+    path("regenerate_feedback/<int:feedback_id>", login_required(views.regenerate_feedback), name="regenerate_feedback"),
 ]

@@ -2,6 +2,9 @@ import openai
 import json
 from report import core
 from main.models import *
+import numpy as np
+import os
+import pickle
 
 try:
     with open('api_keys.json', 'r') as f:
@@ -74,5 +77,35 @@ def populate_all_responses():
             # create module compleition object once all questions are answered
             ModuleCompletion.objects.create(user=user_model.user, module=module, time_spent=30.0, complete=True)
 
-populate_all_responses()
+# check for embedding file
+if os.path.exists('embeddings.pickle'):
+    with open('embeddings.pickle', 'rb') as f:
+        embeddings = pickle.load(f)
+else:
+    # generate embedding file
+    embeddings = {}
+    with open('embeddings.pickle', 'wb') as f:
+        pickle.dump(embeddings, f)
 
+# generate embedding from text
+def generate_embedding(text, model="text-embedding-ada-002"):
+    # check for entry in existing embeddings
+    text = text.replace("\n", " ")
+    if text in embeddings:
+        return embeddings[text]
+    else:
+        print("Need to generate new embedding for: {}".format(text))
+        # generate embedding
+        embedding = openai.Embedding.create(input = [text], model=model)['data'][0]['embedding']
+        embeddings[text] = embedding
+        # save embeddings to file
+        with open('embeddings.pickle', 'wb') as f:
+            pickle.dump(embeddings, f)
+        return embedding
+
+# calculate cosine similarity between two embeddings
+def cosine_similarity(a, b):
+    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+
+if __name__ == "__main__":
+    populate_all_responses()

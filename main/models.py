@@ -5,6 +5,8 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 class Feedback(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     feedback = models.TextField(max_length=4096, null=True, blank=True)
+    context = models.TextField(max_length=4096*4, null=True, blank=True)
+
     human_approved = models.BooleanField(default=False)
     human_edited = models.BooleanField(default=False)
 

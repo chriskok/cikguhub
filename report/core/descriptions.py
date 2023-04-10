@@ -34,7 +34,11 @@ except:
 class Description:
     def __init__(self, learner_model):
         self.learner_model = learner_model
+        self.relevant_answers = get_relevant_answers(self.learner_model)
+
+        print("Generating description for", learner_model.user)
         self.description = self.generate()
+        print("Done generating description for", learner_model.user)
 
     def generate(self):
         if not openai_enabled:
@@ -47,17 +51,17 @@ Assesssor: {self.learner_model.assessor_score}
 {message}
 """
 
-        relevant_responses = get_relevant_answers(self.learner_model)
+        relevant_responses = self.relevant_answers
 
         user_prompt = f"""
 Teacher {self.learner_model.user} has scores {', '.join([f'{m}: {int(getattr(self.learner_model, m + "_score"))}.' for m in metric_descriptions])}.
-Here are some of their recent replies to questions on videos: {relevant_responses}
+Here are some of their recent replies to questions on videos: {[f"question: {x[0]}, answer: {x[1]}, emphasis: {x[2]}" for x in relevant_responses]}
 """
 
         result = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[{"role": "system", "content":
-                       f"""You are an expert teacher trainer writing feedback for teachers learning how to be {', '.join([f'{m}, meaning {d}' for m, d in metric_descriptions.items()])}. You are given a learner's name and their scores out of 100 on each of the five competencies. You are asked to write a description of the learner that highlights their strengths and weaknesses, mentioning specific responses that they gave on assignments."""},
+                       f"""You are an expert teacher trainer writing feedback for teachers learning how to be {', '.join([f'{m}, meaning {d}' for m, d in metric_descriptions.items()])}. You are given a learner's name and their scores out of 100 on each of the five competencies. You are asked to write a description of the learner that highlights their strengths and weaknesses, mentioning specific responses that they gave on assignments. The emphasis field of these responses only exists to help you formulate your description, and should not be included in the final description, so DO NOT MENTION IT. You can use HTML Tags and Bootstrap 4 to format your description and make it easier to read, make sure to especially include bolded text to highlight important points consistently throughout the description."""},
                       {"role": "user", "content":
                        """Teacher Christopher Kok has scores Planner: 20, Guardian: 60, Mentor: 70, Motivator: 5, Assessor: 90. He recently wrote on a Planning assignment that 'I don't think planning really matters, I just like to wing it', on a Guardian assignment that 'I believe in encouraging positive student leadership and taking a back seat on guardianship', on a Mentor assignment that 'I thoroughly evaluate students and give them quality feedback', on a Motivator assignment that 'I don't think motivation is really important, in fact I try to make my students upset as often as possible.', and on an Assessor assignment that 'I believe in giving students a lot of feedback and letting them self-assess'."""},
                       {"role": "assistant", "content":
@@ -73,6 +77,7 @@ However, your scores of 20 in Planner and 5 in Motivator indicate that <b>you ne
         Feedback.objects.create(
             user=self.learner_model.user,
             feedback=result.choices[0].message.content,
+            context=relevant_answers_to_html_table(self.relevant_answers),
             human_approved=False,
             human_edited=False,
             planner_score=self.learner_model.planner_score,
@@ -88,3 +93,22 @@ However, your scores of 20 in Planner and 5 in Motivator indicate that <b>you ne
 
     def __str__(self):
         return str(self.description)
+    
+
+def relevant_answers_to_html_table(relevant_answers):
+    # Convert relevant answers to HTML table in bootstrap 4
+    # relevant_answers is a list of tuples of the form (question, answer, emphasis)
+    return f"""
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Question</th>
+                <th scope="col">Answer</th>
+                <th scope="col">Approximated Emphasis</th>
+            </tr>
+        </thead>
+        <tbody>
+            {''.join([f'<tr><td>{x[0]}</td><td>{x[1]}</td><td>{x[2]}</td></tr>' for x in relevant_answers])}
+        </tbody>
+    </table>
+    """

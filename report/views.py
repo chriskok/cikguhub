@@ -24,8 +24,8 @@ def user_report(request, user_id=0):
     context = {
         'learner_model': curr_learner_model,
         'metrics': {
-            m: core.metrics[m].to_view(int(getattr(curr_learner_model, m + "_score")))
-            for m in core.metrics
+            m: core.defined_metrics[m].to_view(int(getattr(curr_learner_model, m + "_score")))
+            for m in core.defined_metrics
         },
         'description': curr_feedback,
         "all_users": User.objects.all(),
@@ -52,8 +52,8 @@ def expert_report(request, user_id):
         "all_users": User.objects.all(),
         "completed_modules": completed_modules,
         'metrics': {
-            m: core.metrics[m].to_view(int(getattr(curr_learner_model, m + "_score")))
-            for m in core.metrics
+            m: core.defined_metrics[m].to_view(int(getattr(curr_learner_model, m + "_score")))
+            for m in core.defined_metrics
         },
         'feedback_obj': Feedback.objects.filter(user=curr_learner_model.user).latest('id'),
     }
@@ -70,6 +70,19 @@ def approve_feedback(request, feedback_id):
     curr_fb.save()
 
     return expert_report(request, curr_fb.user.id)
+
+
+def regenerate_feedback(request, feedback_id):
+    # get usermodel
+    curr_fb = Feedback.objects.get(pk=feedback_id)
+    curr_user = curr_fb.user
+    user_model = LearnerModel.objects.get(user=curr_user)
+
+    # generate new description
+    curr_fb.feedback = core.Description(user_model)
+
+    return expert_report(request, curr_fb.user.id)
+
 
 class FeedbackUpdateView(SuccessMessageMixin, UpdateView):
     model = Feedback
