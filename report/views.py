@@ -71,7 +71,6 @@ def approve_feedback(request, feedback_id):
 
     return expert_report(request, curr_fb.user.id)
 
-
 class FeedbackUpdateView(SuccessMessageMixin, UpdateView):
     model = Feedback
     fields = ['feedback', "planner_score", "guardian_score", "mentor_score", "motivator_score", "assessor_score"]

@@ -18,7 +18,7 @@ def register_request(request):
             user = form.save()
             login(request, user)
             messages.success(request, "Registration successful." )
-            return redirect("home")
+            return redirect("/recsys/recs/")
         messages.error(request, "Unsuccessful registration. Invalid information.")
     form = NewUserForm()
     return render (request=request, template_name="main/register.html", context={"register_form":form})
@@ -34,7 +34,8 @@ def login_request(request):
                 login(request, user)
                 messages.info(request, f"You are now logged in as {username}.")
                 if (request.GET.get('next')): return redirect(request.GET.get('next'))
-                else: return redirect("home")
+                else:
+                    return redirect("/recsys/recs/")
             else:
                 messages.error(request,"Invalid username or password.")
         else:
@@ -46,7 +47,7 @@ def login_request(request):
 def logout_request(request):
     logout(request)
     messages.info(request, "You have successfully logged out.") 
-    return redirect("home")
+    return redirect("/main/login")
 
 ##########################################
 #                CREATE                  #
