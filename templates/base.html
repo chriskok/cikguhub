@@ -26,6 +26,7 @@
     </head>
 <body class="cikgu_background">
 
+    <!-- TODO: nav should be vertically-aligned -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="#">CikguHub</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
@@ -36,51 +37,52 @@
         <div class="collapse navbar-collapse" id="navbarsExampleDefault">
             <ul class="navbar-nav mr-auto">
                 {% if user.is_authenticated %}
-
-                <li class="nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
-                    <a class="nav-link" href="{% url 'home' %}">Home<span class="sr-only">(current)</span></a>
-                </li>
-
-                {% if user.is_superuser %}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle {% if request.resolver_match.app_name == 'recsys' %}active{% endif %}" href="#" id="recsysMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Recommendation System
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="recsysMenu">
-                        <a class="dropdown-item" href="{% url 'recsys:user_recs' %}">User Preview</a>
-                        <a class="dropdown-item" href="{% url 'recsys:expert_recs' 0 %}">Expert</a>
-                        <a class="dropdown-item" href="{% url 'recsys:user_clustering' %}">User Clustering</a>
-                    </div>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle {% if request.resolver_match.app_name == 'report' %}active{% endif %}" href="#" id="reportMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Report Generation
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="reportMenu">
-                        <a class="dropdown-item" href="{% url 'report:user_report' %}">User Preview</a>
-                        <a class="dropdown-item" href="{% url 'report:expert_report' 0 %}">Expert</a>
-                    </div>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="createMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Create
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="createMenu">
-                        <a class="dropdown-item" href="{% url 'main:create_video' %}">Create Video</a>
-                        <a class="dropdown-item" href="{% url 'main:create_video_question' %}">Create Video Question</a>
-                        <a class="dropdown-item" href="{% url 'main:create_module' %}">Create Module</a>
-                    </div>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
-                </li>
-                {% else %}
-                <li class="nav-item">
-                  <a class="nav-link {% if request.resolver_match.app_name == 'recsys' %}active{% endif %}" href="{% url 'recsys:user_recs' %}">Recommendation System</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link {% if request.resolver_match.app_name == 'report' %}active{% endif %}" href="{% url 'report:user_report' %}">Report Generation</a>
-                </li>
+                    {% if user.is_superuser %}
+                        <li class="nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                            <a class="nav-link" href="{% url 'report:expert_report' 0 %}">Home<span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle {% if request.resolver_match.app_name == 'recsys' %}active{% endif %}" href="#" id="recsysMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Recommendation System
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="recsysMenu">
+                                <a class="dropdown-item" href="{% url 'recsys:user_recs' %}">User Preview</a>
+                                <a class="dropdown-item" href="{% url 'recsys:expert_recs' 0 %}">Expert</a>
+                                <a class="dropdown-item" href="{% url 'recsys:user_clustering' %}">User Clustering</a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle {% if request.resolver_match.app_name == 'report' %}active{% endif %}" href="#" id="reportMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Report Generation
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="reportMenu">
+                                <a class="dropdown-item" href="{% url 'report:user_report' %}">User Preview</a>
+                                <a class="dropdown-item" href="{% url 'report:expert_report' 0 %}">Expert</a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="createMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Create
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="createMenu">
+                                <a class="dropdown-item" href="{% url 'main:create_video' %}">Create Video</a>
+                                <a class="dropdown-item" href="{% url 'main:create_video_question' %}">Create Video Question</a>
+                                <a class="dropdown-item" href="{% url 'main:create_module' %}">Create Module</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                            <a class="nav-link" href="{% url 'recsys:user_recs' %}">Home<span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.app_name == 'recsys' %}active{% endif %}" href="{% url 'recsys:user_recs' %}">Recommendation System</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.app_name == 'report' %}active{% endif %}" href="{% url 'report:user_report' %}">Report Generation</a>
+                        </li>
                 {% endif %}
                 <li class="nav-item">
                   <a class="nav-link" href="{% url 'main:logout' %}">Logout</a>

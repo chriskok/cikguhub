@@ -15,13 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from django.views.generic.base import TemplateView
+from django.views.generic.base import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('recsys/', include(('recsys.urls', 'recsys'), namespace='recsys')),
     path('report/', include(('report.urls', 'report'), namespace='report')),
     path('main/', include(('main.urls', 'main'), namespace='main')),
-    path("", TemplateView.as_view(template_name='home.html'),
-        name='home'),
+    path('', RedirectView.as_view(url='/main/login')),
 ]
