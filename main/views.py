@@ -16,6 +16,10 @@ def register_request(request):
         form = NewUserForm(request.POST)
         if form.is_valid():
             user = form.save()
+            # TODO: Add new fields in forms.py to directly save here with form.cleaned_data
+            lm = LearnerModel(user=user,full_name=form.cleaned_data['email'],school_level="Sekolah Kebangsaan / National Primary School", 
+                              years_of_experience=0.5,role="Guru Akademik Biasa / Academic Teacher", skill_interests="Kemahiran Mengajar / Teaching Skills")
+            lm.save()
             login(request, user)
             messages.success(request, "Registration successful." )
             return redirect("/recsys/recs/")
