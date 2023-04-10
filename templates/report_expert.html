@@ -55,11 +55,31 @@
             <div class="col-sm col-md-8">
                 <h3 class="mb-4">Feedback</h3>
                 <p>{{ feedback_obj.feedback|safe }}</p>
-    
-                <p><b>Context Provided:</b> {{ feedback_obj.context|safe }}</p>
+
+                <p>
+                    <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#contextCollapse" aria-expanded="false" aria-controls="contextCollapse">
+                        Show Context
+                    </button>
+                </p>
+
+                <p id="contextCollapse" class="collapse">{{ feedback_obj.context|safe }}</p>
+
+                <hr>
 
                 <p><b>Human Edited:</b> {{ feedback_obj.human_edited }}</p>
                 <p><b>Human Approved:</b> {{ feedback_obj.human_approved }}</p>
+
+                <p><b>Use AI to edit feedback automatically</b> (for example, ask it to use more bolded sections, or to give more advice on being a guardian)</p>
+                <form action="{% url 'report:ai_edit_feedback' feedback_obj.id %}" method="POST">
+                <div class="input-group">
+                    {% csrf_token %}
+                    <input type="text" class="form-control" placeholder="Instructions for AI" aria-label="Edit Feedback" name="instructions" required>
+                    <div class="input-group-append">
+                        <input type="submit" class="btn btn-primary" value="Autoedit">
+                    </div>
+                </div></form>
+
+                <br>
                 
                 <div class="row">
                     <a role="button" class="btn btn-light ml-3" href="{% url 'report:update_feedback' feedback_obj.id %}">Edit</a>

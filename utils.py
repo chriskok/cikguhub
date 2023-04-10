@@ -107,5 +107,15 @@ def generate_embedding(text, model="text-embedding-ada-002"):
 def cosine_similarity(a, b):
     return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
+# call chatgpt
+def chatgpt(system_prompt, messages=[]):
+    result = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "system", "content":
+                       system_prompt}] + messages
+            )
+    
+    return result.choices[0].message.content
+
 if __name__ == "__main__":
     populate_all_responses()
