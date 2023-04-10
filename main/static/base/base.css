@@ -1,3 +1,155 @@
 .cikgu_background{
     background: #FFD600;
 }
+
+/* Accessbility override for Bootstrap components */
+/* ------------------ Buttons Begins ------------------ */
+.btn-primary {
+    background: #1b6ec2;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active {
+    background: #FFF;
+    color: black;
+    border-color: #1b6ec2;
+}
+
+.btn-primary.disabled {
+    color: #606060;
+    border: 1px solid #999;
+    background: #EEE;
+}
+
+.btn-default {
+    background: #FFF;
+    border: 1px solid #999;
+}
+
+.btn-default:hover,
+.btn-default:focus,
+.btn-default:active,
+.btn-default.active {
+    background: #EEE;
+    border-color: #CCC;
+}
+
+.btn-default.disabled {
+    color: #606060;
+    background: #EEE;
+}
+
+.btn-success {
+    background: #008000;
+}
+
+.btn-success:hover,
+.btn-success:focus,
+.btn-success:active,
+.btn-success.active {
+    background: #FFF;
+    border-color: #008000;
+    color: #008000;
+}
+
+.btn-success.disabled {
+    color: #606060;
+    border: 1px solid #999;
+    background: #EEE;
+}
+
+.btn-danger {
+    background: #D50000;
+}
+
+.btn-danger:hover,
+.btn-danger:focus,
+.btn-danger:active,
+.btn-danger.active {
+    background: #FFF;
+    border-color: #D50000;
+    color: #D50000;
+}
+
+.btn-danger.disabled {
+    color: #606060;
+    border: 1px solid #999;
+    background: #EEE;
+}
+
+.btn-warning {
+    background-color: #f4d03f;
+    color: #000;
+    border: 1px solid #999;
+}
+
+.btn-warning:visited {
+    color: #000;
+}
+
+.btn-warning:hover,
+.btn-warning:focus,
+.btn-warning:active,
+.btn-warning.active {
+    background: #FFF;
+    color: #8d6708;
+    border-color: #8d6708;
+}
+
+.btn-warning.disabled {
+    color: #606060;
+    border: 1px solid #999;
+    background: #EEE;
+}
+
+.btn-info {
+    background-color: #8cd2e7;
+    color: #000;
+    border: 1px solid #999;
+}
+
+.btn-info:visited {
+    color: #000;
+}
+
+.btn-info:hover,
+.btn-info:focus,
+.btn-info:active,
+.btn-info.active {
+    background: #FFF;
+    color: #217e9b;
+    border-color: #217e9b;
+}
+
+.btn-info.disabled {
+    color: #606060;
+    border: 1px solid #999;
+    background: #EEE;
+}
+
+.btn-link {
+    color: #337ab7;
+    background-color: transparent;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.btn-link:hover,
+.btn-link:focus,
+.btn-link:active,
+.btn-link.active {
+    color: #2a6496;
+    text-decoration: underline;
+}
+
+.btn-link.disabled {
+    color: #606060;
+    text-decoration: none;
+}
+/* ------------------ Buttons Ends ------------------ */
+
+/* ------------------ NavBar Begins ------------------ */
+/* ------------------ NavBar Ends ------------------ */
+
