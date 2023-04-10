@@ -32,11 +32,7 @@
             {% if module %}
             <div class="card">
                 <div class="card-header" id="headingOne">
-                    <h5 class="mb-0 pb-2">
-                        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                            Series: {{ series.title }} - Track: {{ series.track.title }}
-                        </button>
-                    </h5>
+                    <h5 class="mb-0 pb-2">{{ module.video.title }}</h5>
                     <div class="row justify-content-center align-items-center pb-2">
                         <div class="col-sm col-md-3">
                             <div class="embed-responsive embed-responsive-16by9">
@@ -44,13 +40,17 @@
                             </div>
                         </div>
                         <div class="col-sm col-md-7">
-                            <p>Next Video: {{ module.video.title }}</p>
+                            <p class="mb-1">Series: {{ series.title }} | Track: {{ series.track.title }}</p>
+                            <p class="mb-1">Questions:</p>
                             {% for q in module.questions.all %}
                             <li>{{ q.question }}</li>
                             {% endfor %}
                         </div>
                         <div class="col-sm col-md-2">
                             <a href="{% url 'recsys:recommended_module' module.id %}" class="btn btn-primary">Launch Module</a>
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                Series Progress
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -81,11 +81,7 @@
             {% if module2 %}
             <div class="card">
                 <div class="card-header" id="headingTwo">
-                    <h5 class="mb-0 pb-2">
-                        <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                            Series: {{ series2.title }} - Track: {{ series2.track.title }}
-                        </button>
-                    </h5>
+                    <h5 class="mb-0 pb-2">{{ module2.video.title }}</h5>
                     <div class="row justify-content-center align-items-center pb-2">
                         <div class="col-sm col-md-3">
                             <div class="embed-responsive embed-responsive-16by9">
@@ -93,13 +89,17 @@
                             </div>
                         </div>
                         <div class="col-sm col-md-7">
-                            <p>Next Video: {{ module2.video.title }}</p>
+                            <p>Series: {{ series2.title }} | Track: {{ series2.track.title }}</p>
+                            <p class="mb-1">Questions:</p>
                             {% for q in module2.questions.all %}
                             <li>{{ q.question }}</li>
                             {% endfor %}
                         </div>
                         <div class="col-sm col-md-2">
                             <a href="{% url 'recsys:recommended_module' module2.id %}" class="btn btn-primary">Launch Module</a>
+                            <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                Series Progress
+                            </button>
                         </div>
                     </div>
                 </div>

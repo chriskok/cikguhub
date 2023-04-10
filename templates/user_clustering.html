@@ -123,7 +123,18 @@
         <div class="card-body">
           <h5 class="card-title">{{ key }}</h5>
           <p class="card-text">{{ value }}</p>
-          <!-- <a href="#" class="btn btn-primary">Show list</a> -->
+          <a class="btn btn-secondary mb-2" data-toggle="collapse" href="#collapseCluster{{forloop.counter0}}" role="button" aria-expanded="false" aria-controls="collapseCluster{{forloop.counter0}}">
+            Show list
+          </a>
+          <div class="collapse" id="collapseCluster{{forloop.counter0}}">
+            {% for learner in learners %}
+              <ul class="list-group">
+                {% if learner.cluster == key|make_list|last|to_int %}
+                <li class="list-group-item"><small><b>{{learner.full_name}}</b><br>Experience: {{learner.years_of_experience}}<br>Role: {{learner.role}}</small></li>
+                {% endif %}
+              </ul>
+            {% endfor %}
+          </div>
         </div> 
       </div>   
     {% endfor %}
@@ -134,12 +145,6 @@
   {% autoescape off %}
   {{ plot_div }}
   {% endautoescape %}
-
-  <br>
-
-  {% for learner in learners %}
-  <p> {{learner.full_name}} - Experience: {{learner.years_of_experience}} - Cluster: {{ labels|index:forloop.counter0 }}</p>
-  {% endfor %}
 </div>
 
 <!-- <canvas id="myChart" style="width:100%;max-width:700px"></canvas> -->

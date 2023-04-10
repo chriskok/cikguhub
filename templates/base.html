@@ -38,9 +38,9 @@
             <ul class="navbar-nav mr-auto">
                 {% if user.is_authenticated %}
                     {% if user.is_superuser %}
-                        <li class="nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                        {% comment %} <li class="nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
                             <a class="nav-link" href="{% url 'report:expert_report' 0 %}">Home<span class="sr-only">(current)</span></a>
-                        </li>
+                        </li> {% endcomment %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle {% if request.resolver_match.app_name == 'recsys' %}active{% endif %}" href="#" id="recsysMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Recommendation System
@@ -60,7 +60,7 @@
                                 <a class="dropdown-item" href="{% url 'report:expert_report' 0 %}">Expert</a>
                             </div>
                         </li>
-                        <li class="nav-item dropdown">
+                        {% comment %} <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="createMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Create
                             </a>
@@ -69,14 +69,14 @@
                                 <a class="dropdown-item" href="{% url 'main:create_video_question' %}">Create Video Question</a>
                                 <a class="dropdown-item" href="{% url 'main:create_module' %}">Create Module</a>
                             </div>
-                        </li>
+                        </li> {% endcomment %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
                         </li>
                     {% else %}
-                        <li class="nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                        {% comment %} <li class="nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
                             <a class="nav-link" href="{% url 'recsys:user_recs' %}">Home<span class="sr-only">(current)</span></a>
-                        </li>
+                        </li> {% endcomment %}
                         <li class="nav-item">
                         <a class="nav-link {% if request.resolver_match.app_name == 'recsys' %}active{% endif %}" href="{% url 'recsys:user_recs' %}">Recommendation System</a>
                         </li>

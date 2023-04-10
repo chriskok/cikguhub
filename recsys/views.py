@@ -368,6 +368,14 @@ def user_clustering(request, method='kmeans', num_clusters=4, features='roles_T,
     labels = clustering(X, num_clusters, method)
     cluster_msgs = illustrate_cluster(labels, one_hot_um)
 
+    # Set the cluster for each learner in the DB
+    clustered_df = pd.DataFrame(list(LearnerModel.objects.all().values()))
+    clustered_df['labels'] = labels
+    for index, row in clustered_df.iterrows():
+        curr_learner = LearnerModel.objects.get(pk=row['id'])
+        curr_learner.cluster = row['labels']
+        curr_learner.save()
+
     context = {
         "learners": LearnerModel.objects.all(),
         "labels": labels,
