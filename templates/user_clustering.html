@@ -9,7 +9,7 @@
 {% load recsys_extras %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 
-<div class="jumbotron">
+<div class="jumbotron bg-transparent">
     <div class="container">
         <h1 class="display-3">User Clustering</h1>
     </div>
@@ -110,9 +110,9 @@
 
 <div class="container">
   
-  <div class="card-container" style="display: flex; flex-wrap: wrap;">
+  <div class="card-container d-flex flex-wrap">
     {% for key,value in cluster_msgs.items %}
-      <div class="card border-0" style="width: 18rem; margin: 10px;">
+      <div class="card border-0 d-inline-block mx-2 my-2" style="width: 18rem; margin: 10px;">
         {% if value|make_list|first|to_int <= 3 %}
           <img class="card-img-top" src="{% static 'img/low_clus.png' %}" style="background-color: #FFD600;  object-fit: contain;">
         {% elif value|make_list|first|to_int >= 4 and value|make_list|first|to_int <= 6 %}
@@ -123,10 +123,10 @@
         <div class="card-body">
           <h5 class="card-title">{{ key }}</h5>
           <p class="card-text">{{ value }}</p>
-          <a class="btn btn-secondary mb-2" data-toggle="collapse" href="#collapseCluster{{forloop.counter0}}" role="button" aria-expanded="false" aria-controls="collapseCluster{{forloop.counter0}}">
+          <a class="btn btn-secondary mb-2" data-toggle="collapse" href="#collapseCluster{{forloop.counter}}" data-target="#collapseCluster{{forloop.counter}}" role="button" aria-expanded="false" aria-controls="collapseCluster{{forloop.counter}}">
             Show list
           </a>
-          <div class="collapse" id="collapseCluster{{forloop.counter0}}">
+          <div class="collapse" id="collapseCluster{{forloop.counter}}">
             {% for learner in learners %}
               <ul class="list-group">
                 {% if learner.cluster == key|make_list|last|to_int %}
