@@ -38,9 +38,10 @@
                             <div class="embed-responsive embed-responsive-16by9">
                                 <iframe class="embed-responsive-item" src="{{ module.video.url }}" allowfullscreen></iframe>
                             </div>
+                            <button type="button" class="btn btn-info btn-sm my-2" disabled>{{ series.track.title }}</button>
                         </div>
-                        <div class="col-sm col-md-7">
-                            <p class="mb-1">Series: {{ series.title }} | Track: {{ series.track.title }}</p>
+                        <div class="col-sm col-md-7 align-self-start">
+                            <p class>Series: {{ series.title }}</p>
                             <p class="mb-1">Questions:</p>
                             {% for q in module.questions.all %}
                             <li>{{ q.question }}</li>
@@ -60,9 +61,9 @@
                     {% for v in series.video_set.all %}
                         {% with m=v.module_set.all.first %}
                         {% if m.id not in completed_modules %}
-                        <p>{{ forloop.counter }}. {{ m.title }}</p>
+                        <p>&ndash; {{ m.title }}</p>
                         {% else %}
-                        <p>{{ forloop.counter }}. [COMPLETED] {{ m.title }}</p>
+                        <p>&#10004; {{ m.title }}</p>
                         {% endif %}
                         {% endwith %}
                     {% endfor %}
@@ -87,9 +88,10 @@
                             <div class="embed-responsive embed-responsive-16by9">
                                 <iframe class="embed-responsive-item" src="{{ module2.video.url }}" allowfullscreen></iframe>
                             </div>
+                            <button type="button" class="btn btn-info btn-sm my-2" disabled>{{ series2.track.title }}</button>
                         </div>
-                        <div class="col-sm col-md-7">
-                            <p>Series: {{ series2.title }} | Track: {{ series2.track.title }}</p>
+                        <div class="col-sm col-md-7 align-self-start">
+                            <p>Series: {{ series2.title }}</p>
                             <p class="mb-1">Questions:</p>
                             {% for q in module2.questions.all %}
                             <li>{{ q.question }}</li>
@@ -108,9 +110,9 @@
                         {% for v in series2.video_set.all %}
                             {% with m=v.module_set.all.first %}
                             {% if m.id not in completed_modules %}
-                            <p>{{ forloop.counter }}. {{ m.title }}</p>
+                            <p>&ndash; {{ m.title }}</p>
                             {% else %}
-                            <p>{{ forloop.counter }}. [COMPLETED] {{ m.title }}</p>
+                            <p>&#10004; {{ m.title }}</p>
                             {% endif %}
                             {% endwith %}
                         {% endfor %}
