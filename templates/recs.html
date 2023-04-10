@@ -63,7 +63,7 @@
                         {% if m.id not in completed_modules %}
                         <p>&ndash; {{ m.title }}</p>
                         {% else %}
-                        <p>&#10004; [COMPLETED] {{ m.title }}</p>
+                        <p>&#10004; {{ m.title }}</p>
                         {% endif %}
                         {% endwith %}
                     {% endfor %}
@@ -112,7 +112,7 @@
                             {% if m.id not in completed_modules %}
                             <p>&ndash; {{ m.title }}</p>
                             {% else %}
-                            <p>&#10004; [COMPLETED] {{ m.title }}</p>
+                            <p>&#10004; {{ m.title }}</p>
                             {% endif %}
                             {% endwith %}
                         {% endfor %}
