@@ -151,5 +151,8 @@
 /* ------------------ Buttons Ends ------------------ */
 
 /* ------------------ NavBar Begins ------------------ */
+.navbar-custom-bg{
+    background-color: black;
+}
 /* ------------------ NavBar Ends ------------------ */
 
