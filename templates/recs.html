@@ -36,7 +36,7 @@
                     <div class="row justify-content-center align-items-center pb-2">
                         <div class="col-sm col-md-3">
                             <div class="embed-responsive embed-responsive-16by9">
-                                <iframe class="embed-responsive-item" src="{{ module.video.url }}" allowfullscreen></iframe>
+                                <iframe class="embed-responsive-item" src="{{ module.video.url }}" allowfullscreen title="Frame for embeded video"></iframe>
                             </div>
                             <button type="button" class="btn btn-info btn-sm my-2" disabled>{{ series.track.title }}</button>
                         </div>
@@ -44,7 +44,9 @@
                             <p class>Series: {{ series.title }}</p>
                             <p class="mb-1">Questions:</p>
                             {% for q in module.questions.all %}
-                            <li>{{ q.question }}</li>
+                            <ul>
+                                <li>{{ q.question }}</li>
+                            </ul>
                             {% endfor %}
                         </div>
                         <div class="col-sm col-md-2">
@@ -86,7 +88,7 @@
                     <div class="row justify-content-center align-items-center pb-2">
                         <div class="col-sm col-md-3">
                             <div class="embed-responsive embed-responsive-16by9">
-                                <iframe class="embed-responsive-item" src="{{ module2.video.url }}" allowfullscreen></iframe>
+                                <iframe class="embed-responsive-item" src="{{ module2.video.url }}" allowfullscreen title="Frame for embed video"></iframe>
                             </div>
                             <button type="button" class="btn btn-info btn-sm my-2" disabled>{{ series2.track.title }}</button>
                         </div>
@@ -94,7 +96,9 @@
                             <p>Series: {{ series2.title }}</p>
                             <p class="mb-1">Questions:</p>
                             {% for q in module2.questions.all %}
-                            <li>{{ q.question }}</li>
+                            <ul>
+                                <li>{{ q.question }}</li>
+                            </ul>
                             {% endfor %}
                         </div>
                         <div class="col-sm col-md-2">
@@ -132,12 +136,14 @@
                 <div class="row">
                     <div class="col-sm col-md-3">
                         <div class="embed-responsive embed-responsive-16by9">
-                            <iframe class="embed-responsive-item" src="{{ m.video.url }}" allowfullscreen></iframe>
+                            <iframe class="embed-responsive-item" src="{{ m.video.url }} " allowfullscreen title="Frame for embed video"></iframe>
                         </div>
                     </div>
                     <div class="col-sm col-md-8">
                         {% for q in m.questions.all %}
-                        <li>{{ q.question }}</li>
+                        <ul>
+                            <li>{{ q.question }}</li>
+                        </ul>
                         {% endfor %}
                     </div>
                     <div class="col-sm col-md-1">
