@@ -9,21 +9,58 @@ from django.urls import reverse, reverse_lazy
 from .models import *
 from django import forms
 from django.contrib.messages.views import SuccessMessageMixin
+import random
 
+exp_level_conversion = {
+    'Kurang daripada 1 tahun / Less than 1 year': 0.5,
+    '1 hingga 5 tahun / 1 to 5 years': 3.0,
+    '6 hingga 10 tahun / 6 to 10 years': 8.0,
+    'Lebih daripada 10 tahun / More than 10 years': 12.5,
+}
 
 def register_request(request):
     if request.method == "POST":
         form = NewUserForm(request.POST)
         if form.is_valid():
             user = form.save()
-            # TODO: Add new fields in forms.py to directly save here with form.cleaned_data
-            lm = LearnerModel(user=user,full_name=form.cleaned_data['email'],school_level="Sekolah Kebangsaan / National Primary School", 
-                              years_of_experience=0.5,role="Guru Akademik Biasa / Academic Teacher", skill_interests="Kemahiran Mengajar / Teaching Skills")
-            lm.save()
+
+            # Create new learner model object
+            years_of_experience = exp_level_conversion[form.cleaned_data['years_of_experience']]
+            percentage_of_experience = years_of_experience/12.5*100
+            planner_score = float(random.randint(max(0,int(percentage_of_experience)-20), min(100,int(percentage_of_experience)+20)))
+            guardian_score = float(random.randint(max(0,int(percentage_of_experience)-20), min(100,int(percentage_of_experience)+20)))
+            mentor_score = float(random.randint(max(0,int(percentage_of_experience)-20), min(100,int(percentage_of_experience)+20)))
+            motivator_score = float(random.randint(max(0,int(percentage_of_experience)-20), min(100,int(percentage_of_experience)+20)))
+            assessor_score = float(random.randint(max(0,int(percentage_of_experience)-20), min(100,int(percentage_of_experience)+20)))
+
+            try:
+                lm, created = LearnerModel.objects.get_or_create(user=user, 
+                    full_name=form.cleaned_data['full_name'],
+                    school_level = form.cleaned_data['school_level'],
+                    years_of_experience = years_of_experience,
+                    role = ','.join(form.cleaned_data['role']),
+                    skill_interests = ','.join(form.cleaned_data['skill_interests']),
+                    planner_score = planner_score,
+                    guardian_score = guardian_score,
+                    mentor_score = mentor_score,
+                    motivator_score = motivator_score,
+                    assessor_score = assessor_score,
+                    current_feedback = Feedback.objects.create(user=user, feedback="",
+                        planner_score = planner_score,
+                        guardian_score = guardian_score,
+                        mentor_score = mentor_score,
+                        motivator_score = motivator_score,
+                        assessor_score = assessor_score,
+                    )
+                )
+                if (created): print(f'LearnerModel: {lm.full_name} created')
+            except Exception as e:
+                print(f'Failed to create LearnerModel for: {user}, ERROR: {e}')
+                
             login(request, user)
             messages.success(request, "Registration successful." )
             return redirect("/recsys/recs/")
-        messages.error(request, "Unsuccessful registration. Invalid information.")
+        messages.error(request, f"Unsuccessful registration: {[(field, errors[0]) for field, errors in form.errors.items()]}")
     form = NewUserForm()
     return render (request=request, template_name="main/register.html", context={"register_form":form})
 
