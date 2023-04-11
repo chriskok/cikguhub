@@ -102,3 +102,9 @@ class ModuleUpdateView(SuccessMessageMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('recsys:expert_recs', kwargs={'user_id': 0})
+
+    def get_form(self, *args, **kwargs):
+        form = super(ModuleUpdateView, self).get_form(*args, **kwargs)
+        form.fields['questions'].queryset = VideoQuestion.objects.filter(video=self.object.video)
+        # form.fields['b_a'].queryset = A.objects.filter(a_user=self.request.user) 
+        return form

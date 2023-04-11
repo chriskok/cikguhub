@@ -94,7 +94,7 @@ def generate_embedding(text, model="text-embedding-ada-002"):
     if text in embeddings:
         return embeddings[text]
     else:
-        print("Need to generate new embedding for: {}".format(text))
+        # print("Need to generate new embedding for: {}".format(text))
         # generate embedding
         embedding = openai.Embedding.create(input = [text], model=model)['data'][0]['embedding']
         embeddings[text] = embedding

@@ -8,4 +8,6 @@ def by_user(qset, user):
 
 @register.filter
 def get_first_answer(qset):
-    return qset.first().answer
+    first = qset.first()
+    if (first): return first.answer
+    else: return "No Answer"
