@@ -23,4 +23,5 @@ urlpatterns = [
     path('report/', include(('report.urls', 'report'), namespace='report')),
     path('main/', include(('main.urls', 'main'), namespace='main')),
     path('', RedirectView.as_view(url='/main/login')),
+    path('', include('django_prometheus.urls')),
 ]
