@@ -39,6 +39,7 @@ role_code = {'GuruAkademikBiasa/AcademicTeacher': 'T',
              'Officer': 'O'}
 
 level_code = {'Other:': -1,
+              'Other': -1,
               'Saya bukan seorang cikgu / I am not a teacher': 0,
               'Sekolah Kebangsaan / National Primary School': 1,
               'Sekolah Menengah Kebangsaan / National Secondary School': 2}
