@@ -9,6 +9,7 @@ class Feedback(models.Model):
 
     human_approved = models.BooleanField(default=False)
     human_edited = models.BooleanField(default=False)
+    user_feedback = models.TextField(max_length=4096, null=True, blank=True)
 
     planner_score = models.FloatField(default=0.0, validators=[MinValueValidator(0.0), MaxValueValidator(100.0)])
     guardian_score = models.FloatField(default=0.0, validators=[MinValueValidator(0.0), MaxValueValidator(100.0)])

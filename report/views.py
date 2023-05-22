@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
 from main.models import *
 import datetime
 from utils import chatgpt
@@ -20,6 +21,15 @@ def user_report(request, user_id=0):
     else:
         curr_user = request.user
 
+    # if post request, update the feedback objects userfeedback
+    if request.method == 'POST':
+        # get the feedback object
+        curr_feedback = Feedback.objects.filter(user=curr_user).latest('id')
+        if (curr_feedback.user_feedback): curr_feedback.user_feedback += "\n\n" + request.POST.get('userfeedback')
+        else: curr_feedback.user_feedback = request.POST.get('userfeedback')
+        curr_feedback.save()
+        messages.info(request, "Thank you for the comment on the AI-generated feedback! We will use this to improve our system.")
+
     curr_learner_model = LearnerModel.objects.get(user=curr_user)
     curr_feedback = Feedback.objects.filter(user=curr_learner_model.user).latest('id').feedback if Feedback.objects.filter(user=curr_learner_model.user).exists() else None
     context = {
@@ -29,6 +39,7 @@ def user_report(request, user_id=0):
             for m in core.defined_metrics
         },
         'description': curr_feedback,
+        'feedback_obj': Feedback.objects.filter(user=curr_learner_model.user).latest('id'),
         "all_users": User.objects.all(),
     }
     return render(request, "report.html", context)
