@@ -6,6 +6,15 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from main.models import *
 import datetime
+
+from math import pi
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.patches import Patch
+from matplotlib.lines import Line2D
+import base64
+from io import BytesIO
+
 from utils import chatgpt
 from .core import feedback_system_prompt
 from . import core
@@ -14,6 +23,33 @@ from . import core
 def index(request):
     return render(request, "report.html")
 
+def produce_plot(track_title, curr_user):
+    # get percentage of people who have completed the track
+    curr_track = Track.objects.get(title=track_title)
+    serieses = Series.objects.filter(track=curr_track)
+    videos = Video.objects.filter(series__in=serieses)
+    total_videos = videos.count()
+    completed_videos = ModuleCompletion.objects.filter(user=curr_user, module__video__in=videos).count()
+    percentage = round(completed_videos / total_videos * 100)
+
+    fig, ax = plt.subplots(figsize=(2, 2))
+    data = [percentage, 100-percentage]
+    wedgeprops = {'width':0.3, 'edgecolor':'black', 'lw':3}
+    patches, _ = ax.pie(data, wedgeprops=wedgeprops, startangle=90, colors=['#5DADE2', '#FFD600'])
+    patches[1].set_zorder(0)
+    patches[1].set_edgecolor('#FFD600')
+    plt.title(track_title.title(), fontsize=12, loc='center')
+    plt.text(0, 0, f"{data[0]}%", ha='center', va='center', fontsize=20)
+    # plt.text(0, 0, track_title, ha='center', va='top', fontsize=12)
+    
+    # save donut to image temporarily
+    tmpfile = BytesIO()
+    fig.savefig(tmpfile, format='png', transparent=True, bbox_inches='tight')
+    encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
+
+    html = '<img src=\'data:image/png;base64,{}\'>'.format(encoded)
+
+    return html
 
 def user_report(request, user_id=0):
     if (user_id):
@@ -41,6 +77,11 @@ def user_report(request, user_id=0):
         'description': curr_feedback,
         'feedback_obj': Feedback.objects.filter(user=curr_learner_model.user).latest('id'),
         "all_users": User.objects.all(),
+        "teaching_plot": produce_plot('teaching', curr_user),
+        "leadership_plot": produce_plot('leadership', curr_user),
+        "multimedia_plot": produce_plot('multimedia', curr_user),
+        "coaching_plot": produce_plot('coaching', curr_user),
+        "digital_plot": produce_plot('digital', curr_user),
     }
     return render(request, "report.html", context)
 
