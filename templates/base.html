@@ -52,7 +52,7 @@
                         </li> {% endcomment %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle {% if request.resolver_match.app_name == 'recsys' %}active{% endif %}" href="#" id="recsysMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Recommendation System
+                                Activities
                             </a>
                             <div class="dropdown-menu" aria-labelledby="recsysMenu">
                                 <a class="dropdown-item" href="{% url 'recsys:user_recs' %}">User Preview</a>
@@ -62,7 +62,7 @@
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle {% if request.resolver_match.app_name == 'report' %}active{% endif %}" href="#" id="reportMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Report Generation
+                                Progress
                             </a>
                             <div class="dropdown-menu" aria-labelledby="reportMenu">
                                 <a class="dropdown-item" href="{% url 'report:user_report' %}">User Preview</a>
@@ -87,10 +87,10 @@
                             <a class="nav-link" href="{% url 'recsys:user_recs' %}">Home<span class="sr-only">(current)</span></a>
                         </li> {% endcomment %}
                         <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.app_name == 'recsys' %}active{% endif %}" href="{% url 'recsys:user_recs' %}">Recommendation System</a>
+                        <a class="nav-link {% if request.resolver_match.app_name == 'recsys' %}active{% endif %}" href="{% url 'recsys:user_recs' %}">Activities</a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.app_name == 'report' %}active{% endif %}" href="{% url 'report:user_report' %}">Report Generation</a>
+                        <a class="nav-link {% if request.resolver_match.app_name == 'report' %}active{% endif %}" href="{% url 'report:user_report' %}">Progress</a>
                         </li>
                 {% endif %}
                 <li class="nav-item">

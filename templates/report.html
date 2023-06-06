@@ -9,7 +9,7 @@
 <!-- Main jumbotron for a primary marketing message or call to action -->
 <div class="jumbotron bg-transparent">
     <div class="container">
-        <h1 class="display-3">Competency Report</h1>
+        <h1 class="display-3">Progress Report</h1>
 
         {% if user.is_superuser %}
         <div class="dropdown">
@@ -68,7 +68,7 @@
             </form>
         </div>
     </div>
-    <a class="button" href="{% url 'recsys:user_recs' %}">Join a class to improve skills!</a>
+    {% comment %} <a class="button" href="{% url 'recsys:user_recs' %}">Join a class to improve skills!</a> {% endcomment %}
 </div>
 
 <script>
