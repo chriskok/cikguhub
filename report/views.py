@@ -109,6 +109,11 @@ def expert_report(request, user_id):
             for m in core.defined_metrics
         },
         'feedback_obj': Feedback.objects.filter(user=curr_learner_model.user).latest('id'),
+        "teaching_plot": produce_plot('teaching', curr_user),
+        "leadership_plot": produce_plot('leadership', curr_user),
+        "multimedia_plot": produce_plot('multimedia', curr_user),
+        "coaching_plot": produce_plot('coaching', curr_user),
+        "digital_plot": produce_plot('digital', curr_user),
     }
     return render(request, "report_expert.html", context)
 
