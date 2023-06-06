@@ -28,7 +28,7 @@ from . import core
 def index(request):
     return render(request, "report.html")
 
-def produce_plot(track_title, curr_user):
+def get_user_percentage_completion(curr_user, track_title):
     # get percentage of people who have completed the track
     curr_track = Track.objects.get(title=track_title)
     serieses = Series.objects.filter(track=curr_track)
@@ -36,6 +36,10 @@ def produce_plot(track_title, curr_user):
     total_videos = videos.count()
     completed_videos = ModuleCompletion.objects.filter(user=curr_user, module__video__in=videos).count()
     percentage = round(completed_videos / total_videos * 100)
+    return percentage
+
+def produce_plot(track_title, curr_user):
+    percentage = get_user_percentage_completion(curr_user, track_title)
 
     fig, ax = plt.subplots(figsize=(2, 2))
     data = [percentage, 100-percentage]
@@ -167,7 +171,6 @@ def user_report(request, user_id=0):
     }
     return render(request, "report.html", context)
 
-
 def expert_report(request, user_id):
     # TODO: figure out what best to show the expert user to make decisions
     # TODO: maybe we can use AI to generate the summary of feedback first, and have human look over
@@ -201,6 +204,70 @@ def expert_report(request, user_id):
         "topics_by_answer": topics_by_answer,
     }
     return render(request, "report_expert.html", context)
+
+def school_report(request):
+    def get_user_aggregate_plot():
+        # Read CSV into pandas
+        data = User.objects.all()
+        # for each user, get percentage of completion and format into df
+        df = pd.DataFrame(columns=['user', 'completion'])
+        for user in data:
+            teaching = get_user_percentage_completion(user, 'teaching')
+            df = df.append({'user': user.username, 'teaching_completion': teaching if teaching else 0 }, ignore_index=True)
+        
+        name = df['user']
+        price = df['teaching_completion']
+        
+        # Figure Size
+        fig, ax = plt.subplots(figsize =(12, 8))
+        
+        # Horizontal Bar Plot
+        ax.barh(name, price)
+        
+        # Remove axes splines
+        for s in ['top', 'bottom', 'left', 'right']:
+            ax.spines[s].set_visible(False)
+        
+        # Remove x, y Ticks
+        ax.xaxis.set_ticks_position('none')
+        ax.yaxis.set_ticks_position('none')
+        
+        # Add padding between axes and labels
+        ax.xaxis.set_tick_params(pad = 5)
+        ax.yaxis.set_tick_params(pad = 10)
+        
+        # # Add x, y gridlines
+        # ax.grid(b = True, color ='grey',
+        #         linestyle ='-.', linewidth = 0.5,
+        #         alpha = 0.2)
+        
+        # Show top values
+        ax.invert_yaxis()
+        
+        # Add annotation to bars
+        for i in ax.patches:
+            plt.text(i.get_width()+0.2, i.get_y()+0.5,
+                    str(round((i.get_width()), 2)),
+                    fontsize = 10, fontweight ='bold',
+                    color ='grey')
+        
+        # Add Plot Title
+        ax.set_title('Percentage of Videos Completed by User',
+                    loc ='left', )
+        
+        # save plot to image temporarily
+        tmpfile = BytesIO()
+        fig.savefig(tmpfile, format='png', transparent=True, bbox_inches='tight')
+        encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
+
+        html = '<img src=\'data:image/png;base64,{}\'>'.format(encoded)
+
+        return html
+    
+    context = {
+        "agg_plot":get_user_aggregate_plot(),
+    }
+    return render(request, "report_school.html", context)
 
 
 def approve_feedback(request, feedback_id):

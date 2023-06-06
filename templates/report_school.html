@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} CikguHub - Report {% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/user_report.css' %}">
+
+<!-- Main jumbotron for a primary marketing message or call to action -->
+<div class="jumbotron bg-transparent">
+    <div class="container">
+        <h1 class="display-3">School-level Report</h1>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col-md-12">{{agg_plot | safe}}</div>
+    <div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip({ html: true });
+    });
+</script>
+
+
+{% endblock %}
