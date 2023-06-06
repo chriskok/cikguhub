@@ -38,7 +38,23 @@
             <div class="col-sm-4 col-md-2">{{coaching_plot | safe}}</div>
             <div class="col-sm-4 col-md-2">{{digital_plot | safe}}</div>
         <div>
-        <div class="row">
+        
+        <div class="row justify-content-md-center align-items-center">
+            <b>Keywords:&nbsp</b>{{keywords}}
+            <a class="btn btn-secondary btn-sm ml-2" data-toggle="collapse" href="#topicsCollapse" role="button" aria-expanded="false" aria-controls="topicsCollapse">
+                Topics by Answer
+            </a>
+        <div>
+    
+        <div class="collapse mt-2" id="topicsCollapse">
+            <div class="card card-body">
+                {% for topic in topics_by_answer %}
+                    <li>{{topic.0}}: <i>{{topic.1}}</i></li>
+                {% endfor %}
+            </div>
+        </div>
+    
+        <div class="row mt-4">
             <div class="col-sm col-md-4">
                 <h3 class="mb-4">Competencies</h3>
                 {% for id, value in metrics.items %}
