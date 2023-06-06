@@ -233,6 +233,11 @@ def school_report(request):
         # plot = df.plot.barh(stacked=True, title="Percentage of Videos Completed by User", ylabel="user", y='user')
         # fig = plot.get_figure()
 
+        # sort df by cumulative percentages
+        df['cumulative'] = df['teaching'] + df['leadership'] + df['multimedia'] + df['coaching'] + df['digital']
+        df = df.sort_values(by=['cumulative'], ascending=False)
+        df = df.drop(columns=['cumulative'])
+
         columns = list(df.columns)
         b = []
         colors = plt.cm.get_cmap('plasma',len(columns))
@@ -252,8 +257,7 @@ def school_report(request):
             ax.bar_label(b[i],
                         padding = 0,
                         label_type = 'center',
-                        rotation = 'horizontal',
-                        color='grey')
+                        rotation = 'horizontal',) # color='grey'
         ax.set_ylabel('Video Completions')
         # ax.set_xlabel('user')
         ax.set_xticks(xticks)
