@@ -210,51 +210,56 @@ def school_report(request):
         # Read CSV into pandas
         data = User.objects.all()
         # for each user, get percentage of completion and format into df
-        df = pd.DataFrame(columns=['user', 'completion'])
+        data_list = []
         for user in data:
             teaching = get_user_percentage_completion(user, 'teaching')
-            df = df.append({'user': user.username, 'teaching_completion': teaching if teaching else 0 }, ignore_index=True)
-        
-        name = df['user']
-        price = df['teaching_completion']
-        
-        # Figure Size
-        fig, ax = plt.subplots(figsize =(12, 8))
-        
-        # Horizontal Bar Plot
-        ax.barh(name, price)
-        
-        # Remove axes splines
-        for s in ['top', 'bottom', 'left', 'right']:
-            ax.spines[s].set_visible(False)
-        
-        # Remove x, y Ticks
-        ax.xaxis.set_ticks_position('none')
-        ax.yaxis.set_ticks_position('none')
-        
-        # Add padding between axes and labels
-        ax.xaxis.set_tick_params(pad = 5)
-        ax.yaxis.set_tick_params(pad = 10)
-        
-        # # Add x, y gridlines
-        # ax.grid(b = True, color ='grey',
-        #         linestyle ='-.', linewidth = 0.5,
-        #         alpha = 0.2)
-        
-        # Show top values
-        ax.invert_yaxis()
-        
-        # Add annotation to bars
-        for i in ax.patches:
-            plt.text(i.get_width()+0.2, i.get_y()+0.5,
-                    str(round((i.get_width()), 2)),
-                    fontsize = 10, fontweight ='bold',
-                    color ='grey')
-        
-        # Add Plot Title
-        ax.set_title('Percentage of Videos Completed by User',
-                    loc ='left', )
-        
+            leadership = get_user_percentage_completion(user, 'leadership')
+            multimedia = get_user_percentage_completion(user, 'multimedia')
+            coaching = get_user_percentage_completion(user, 'coaching')
+            digital = get_user_percentage_completion(user, 'digital')
+            data_list.append({'user': user.username, 'teaching': teaching if teaching else 0, 'leadership': leadership if leadership else 0, 'multimedia': multimedia if multimedia else 0, 'coaching': coaching if coaching else 0, 'digital': digital if digital else 0 })
+        df = pd.DataFrame.from_records(data_list)
+        # plot = df.plot.barh(stacked=True, title="Percentage of Videos Completed by User", ylabel="user", y='user')
+        # fig = plot.get_figure()
+
+        columns = list(df.columns)
+        b = []
+        colors = plt.cm.get_cmap('plasma',len(columns))
+        xticks = [i for i in range(len(df))]
+
+        fig, ax = plt.subplots(figsize=(16, 9))
+        for i in range(1,len(columns)):
+            if i==1:
+                bar_bottom = 0
+            else:
+                bar_bottom = bar_bottom + df[columns[i-1]].values
+            b.append(plt.bar(xticks,
+                            df[columns[i]].values,
+                            bottom = bar_bottom,
+                            color = colors(i)))
+        for i in range(len(b)):
+            ax.bar_label(b[i],
+                        padding = 0,
+                        label_type = 'center',
+                        rotation = 'horizontal',
+                        color='grey')
+        ax.set_ylabel('Video Completions')
+        ax.set_xlabel('user')
+        ax.set_xticks(xticks)
+        ax.set_xticklabels(df['user'].values, rotation = 90)
+        ax.set_title('Percentage of Videos Completed by User')
+        ax.legend(b, columns[1:])
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.spines['bottom'].set_visible(False)
+        ax.spines['left'].set_visible(False)
+
+        # threshold = 0
+        # for c in ax.containers:
+        #     # Filter the labels
+        #     labels = [v if v > threshold else "" for v in c.datavalues]    
+        #     ax.bar_label(c, labels=labels, label_type="center",rotation = 'horizontal',color='grey')
+
         # save plot to image temporarily
         tmpfile = BytesIO()
         fig.savefig(tmpfile, format='png', transparent=True, bbox_inches='tight')
