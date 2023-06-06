@@ -7,13 +7,17 @@ from django.contrib import messages
 from main.models import *
 import datetime
 
+# dashboard libraries
 from math import pi
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 from matplotlib.lines import Line2D
 import base64
+import re
 from io import BytesIO
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer, TfidfTransformer
+from sklearn.feature_extraction import text
 
 from utils import chatgpt
 from .core import feedback_system_prompt
@@ -51,6 +55,28 @@ def produce_plot(track_title, curr_user):
 
     return html
 
+def get_user_topics(curr_user):
+
+    def pre_process(text):
+        # lowercase
+        text=text.lower()
+        #remove tags
+        text=re.sub("</?.*?>"," <> ",text)
+        # remove special characters and digits
+        text=re.sub("(\\d|\\W)+"," ",text)
+        return text
+
+    all_answers = [pre_process(x) for x in list(AnswerToVideoQuestion.objects.filter(user=curr_user).values_list('answer', flat=True))]
+    print(all_answers)
+
+    cv=CountVectorizer(max_df=0.85,stop_words="english")
+    word_count_vector=cv.fit_transform(all_answers)
+
+    tfidf_transformer=TfidfTransformer(smooth_idf=True,use_idf=True)
+    tfidf_transformer.fit(word_count_vector)
+
+    print(list(cv.vocabulary_.keys())[:10])
+
 def user_report(request, user_id=0):
     if (user_id):
         curr_user = User.objects.get(pk=user_id)
@@ -83,6 +109,7 @@ def user_report(request, user_id=0):
         "coaching_plot": produce_plot('coaching', curr_user),
         "digital_plot": produce_plot('digital', curr_user),
     }
+    get_user_topics(curr_user)
     return render(request, "report.html", context)
 
 
