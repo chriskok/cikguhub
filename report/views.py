@@ -206,6 +206,17 @@ def expert_report(request, user_id):
     return render(request, "report_expert.html", context)
 
 def school_report(request):
+
+    def save_plot(fig):
+        # save plot to image temporarily
+        tmpfile = BytesIO()
+        fig.savefig(tmpfile, format='png', transparent=True, bbox_inches='tight')
+        encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
+
+        html = '<img src=\'data:image/png;base64,{}\'>'.format(encoded)
+
+        return html
+
     def get_user_aggregate_plot():
         # Read CSV into pandas
         data = User.objects.all()
@@ -244,7 +255,7 @@ def school_report(request):
                         rotation = 'horizontal',
                         color='grey')
         ax.set_ylabel('Video Completions')
-        ax.set_xlabel('user')
+        # ax.set_xlabel('user')
         ax.set_xticks(xticks)
         ax.set_xticklabels(df['user'].values, rotation = 90)
         ax.set_title('Percentage of Videos Completed by User')
@@ -261,16 +272,43 @@ def school_report(request):
         #     ax.bar_label(c, labels=labels, label_type="center",rotation = 'horizontal',color='grey')
 
         # save plot to image temporarily
-        tmpfile = BytesIO()
-        fig.savefig(tmpfile, format='png', transparent=True, bbox_inches='tight')
-        encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
-
-        html = '<img src=\'data:image/png;base64,{}\'>'.format(encoded)
-
-        return html
+        return save_plot(fig)
     
+    def get_user_topics_agg():
+        # Read CSV into pandas
+        data = User.objects.all()
+        # for each user, get percentage of completion and format into df
+        agg_topics = {}
+        for user in data:
+            topics,_ = get_user_topics(user)
+            if (topics):
+                for topic in topics.split(', '):
+                    if topic in agg_topics:
+                        agg_topics[topic] += 1
+                    else:
+                        agg_topics[topic] = 1
+        # sort agg_topics by value
+        agg_topics = dict(sorted(agg_topics.items(), key=lambda item: item[1], reverse=True))
+
+        fig, ax = plt.subplots(figsize=(16, 9))
+        # get list of agg_topics keys
+        topics = list(agg_topics.keys())
+        # get list of agg_topics values
+        values = list(agg_topics.values())
+        ax.bar(topics,values, color="#6a00a8")
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.spines['bottom'].set_visible(False)
+        ax.spines['left'].set_visible(False)
+        ax.set_xticklabels(topics, rotation = 90)
+        ax.set_title('Most Common Topics')
+        
+        # save plot to image temporarily
+        return save_plot(fig)
+
     context = {
         "agg_plot":get_user_aggregate_plot(),
+        "topics_plot":get_user_topics_agg(),
     }
     return render(request, "report_school.html", context)
 
