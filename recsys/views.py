@@ -240,6 +240,7 @@ def user_recs(request, user_id=0):
     return render(request, "recs.html", context=context)
 
 def produce_feedback(user):
+    print('starting feedback thread...')
     feedback_thread = threading.Thread(target=core.Description, name="feedback_creator", args=(LearnerModel.objects.get(user=user),))
     feedback_thread.start()
 

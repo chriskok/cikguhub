@@ -40,6 +40,7 @@ def get_relevant_answers(usermodel, n=3):
         top_answers = sorted(relevance.items(), key=lambda x: x[1], reverse=True)[:n]
 
         # add to sel
-        sel += [(x[0].question.question, x[0].answer, metric[0]) for x in top_answers]
+        # TODO: add and use video title for each answer
+        sel += [(x[0].question.question, x[0].answer, metric[0], x[0].video.title) for x in top_answers]
 
     return sel #[f"question: {x[0]}, answer: {x[1]}, emphasis: {x[2]}" for x in sel]
