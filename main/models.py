@@ -70,6 +70,9 @@ class Video(models.Model):
 
     def __str__(self):
         return "{}. {}".format(str(self.id), self.title)
+    
+    class Meta:
+        ordering = ('series_order', )
 
 class VideoQuestion(models.Model):
     video = models.ForeignKey(Video, on_delete=models.CASCADE)
