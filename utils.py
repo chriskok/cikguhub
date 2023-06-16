@@ -117,5 +117,23 @@ def chatgpt(system_prompt, messages=[]):
     
     return result.choices[0].message.content
 
-if __name__ == "__main__":
-    populate_all_responses()
+# function to update all VideoQuestion objects that are of a certain string
+def update_video_questions(question_string, new_q_string):
+    # get all video questions
+    video_questions = VideoQuestion.objects.all()
+    # for each video question
+    for video_question in video_questions:
+        # if the question contains the string we're looking for
+        if question_string.lower() in video_question.question.lower():
+            print("Updating question: {}".format(video_question.question))
+            # update the type to be OEQ
+            video_question.question = new_q_string
+            video_question.save()
+
+# if __name__ == "__main__":
+    # populate_all_responses()
+    # update_video_questions("How have you applied these lessons in your classroom in the past?", "How can you apply the knowledge or skills learnt in this video to improve your teaching practice or student learning outcomes? | Bagaimana anda boleh mengaplikasikan pengetahuan atau kemahiran yang dipelajari dalam video ini untuk meningkatkan amalan pengajaran anda atau hasil pembelajaran pelajar?")
+    # update_video_questions("What did you learn from this video?", "What is the key takeaway or learning from this video that has impacted you the most, and why? | Apakah intipati atau pembelajaran utama dari video ini yang memberi kesan paling besar kepada anda, dan mengapa?")
+
+update_video_questions("How have you applied these lessons in your classroom in the past?", "How can you apply the knowledge or skills learnt in this video to improve your teaching practice or student learning outcomes? | Bagaimana anda boleh mengaplikasikan pengetahuan atau kemahiran yang dipelajari dalam video ini untuk meningkatkan amalan pengajaran anda atau hasil pembelajaran pelajar?")
+update_video_questions("What did you learn from this video?", "What is the key takeaway or learning from this video that has impacted you the most, and why? | Apakah intipati atau pembelajaran utama dari video ini yang memberi kesan paling besar kepada anda, dan mengapa?")
