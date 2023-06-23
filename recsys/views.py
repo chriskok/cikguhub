@@ -294,6 +294,14 @@ def expert_recs(request, user_id):
     context = {"series": recommended_series, "curr_user": curr_user, "all_users": User.objects.all()}
     return render(request, "recs_expert.html", context=context)
 
+
+def all_activities(request):
+
+    all_tracks = Track.objects.all()
+    context = {"all_tracks": all_tracks}
+    return render(request, "all_activities.html", context=context)
+
+
 ################################
 #          CLUSTERING          #
 ################################

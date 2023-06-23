@@ -55,8 +55,9 @@
                                 Activities
                             </a>
                             <div class="dropdown-menu" aria-labelledby="recsysMenu">
-                                <a class="dropdown-item" href="{% url 'recsys:user_recs' %}">User Preview</a>
-                                <a class="dropdown-item" href="{% url 'recsys:expert_recs' 0 %}">Expert</a>
+                                <a class="dropdown-item" href="{% url 'recsys:user_recs' %}">User View</a>
+                                <a class="dropdown-item" href="{% url 'recsys:expert_recs' 0 %}">Expert View</a>
+                                <a class="dropdown-item" href="{% url 'recsys:all_activities' %}">All Activities</a>
                                 <a class="dropdown-item" href="{% url 'recsys:user_clustering' %}">User Clustering</a>
                             </div>
                         </li>
@@ -88,7 +89,10 @@
                             <a class="nav-link" href="{% url 'recsys:user_recs' %}">Home<span class="sr-only">(current)</span></a>
                         </li> {% endcomment %}
                         <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.app_name == 'recsys' %}active{% endif %}" href="{% url 'recsys:user_recs' %}">Activities</a>
+                        <a class="nav-link {% if request.resolver_match.app_name == 'recsys' %}active{% endif %}" href="{% url 'recsys:user_recs' %}">Key Activities</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.app_name == 'all_activities' %}active{% endif %}" href="{% url 'recsys:all_activities' %}">All Activities</a>
                         </li>
                         <li class="nav-item">
                         <a class="nav-link {% if request.resolver_match.app_name == 'report' %}active{% endif %}" href="{% url 'report:user_report' %}">Progress</a>
