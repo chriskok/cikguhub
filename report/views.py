@@ -57,6 +57,7 @@ def produce_plot(track_title, curr_user):
     encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
 
     html = '<img src=\'data:image/png;base64,{}\'>'.format(encoded)
+    plt.close(fig)
 
     return html
 
@@ -214,6 +215,7 @@ def school_report(request):
         encoded = base64.b64encode(tmpfile.getvalue()).decode('utf-8')
 
         html = '<img src=\'data:image/png;base64,{}\'>'.format(encoded)
+        plt.close(fig)
 
         return html
 

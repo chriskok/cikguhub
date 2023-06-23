@@ -296,9 +296,11 @@ def expert_recs(request, user_id):
 
 
 def all_activities(request):
-
+    curr_user = request.user
     all_tracks = Track.objects.all()
-    context = {"all_tracks": all_tracks}
+    completed_modules = list(curr_user.modulecompletion_set.all().values_list('module__id', flat=True))
+    
+    context = {"all_tracks": all_tracks, "completed_modules": completed_modules}
     return render(request, "all_activities.html", context=context)
 
 

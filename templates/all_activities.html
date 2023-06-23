@@ -27,9 +27,9 @@
     </div>
     <div class="container">
 
-        <div id="accordion">
         {% for t in all_tracks %}
-            TITLE: {{t.title}}
+            <h2 class="pb-1">{{t.title|title}}</h2>
+            <div id="accordion" class="mb-4">
             {% for s in t.series_set.all %}
                 <div class="card mb-0">
                     <div class="card-header" id="heading{{ s.id }}">
@@ -44,19 +44,24 @@
                             {% for v in s.video_set.all %}
                                 {% with m=v.module_set.all.first %}
                                 <p>{{ m.title }}</p>
-                                <div class="row">
+                                <div class="row mb-3">
                                     <div class="col-sm col-md-3">
                                         <div class="embed-responsive embed-responsive-16by9">
                                             <iframe class="embed-responsive-item" src="{{ m.video.url }}" allowfullscreen></iframe>
                                         </div>
                                     </div>
-                                    <div class="col-sm col-md-8">
+                                    <div class="col-sm col-md-7">
                                         {% for q in m.questions.all %}
                                         <li>{{ q.question }}</li>
                                         {% endfor %}
                                     </div>
-                                    <div class="col-sm col-md-1">
-                                        <a href="{% url 'main:update_module' m.id %}" class="btn btn-primary">Edit</a>
+                                    <div class="col-sm col-md-2">
+                                        {% comment %} <a href="{% url 'main:update_module' m.id %}" class="btn btn-primary">Edit</a> {% endcomment %}
+                                        {% if m.id in completed_modules %}
+                                        <button href="{% url 'recsys:recommended_module' m.id %}" class="btn btn-success" disabled>Completed!</button>
+                                        {% else %}
+                                        <a href="{% url 'recsys:recommended_module' m.id %}" class="btn btn-primary">Launch Module</a>
+                                        {% endif %}
                                     </div>
                                 </div>
                                 {% endwith %}
@@ -65,8 +70,8 @@
                     </div>
                 </div>
             {% endfor %}
+            </div>
         {% endfor %}
-        </div>
     </div>
 
 {% endblock %}
