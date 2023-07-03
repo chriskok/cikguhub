@@ -161,8 +161,7 @@ def user_report(request, user_id=0):
         },
         'description': curr_feedback,
         'feedback_obj': Feedback.objects.filter(user=curr_learner_model.user).latest('id'),
-        # "all_users": User.objects.filter(learnermodel__school=curr_user.learnermodel.school),
-        "all_users": User.objects.all(),
+        "all_users": User.objects.filter(learnermodel__school=curr_user.learnermodel.school),
         "teaching_plot": produce_plot('teaching', curr_user),
         "leadership_plot": produce_plot('leadership', curr_user),
         "multimedia_plot": produce_plot('multimedia', curr_user),
@@ -190,8 +189,7 @@ def expert_report(request, user_id):
     context = {
         "learner_model": curr_learner_model,
         "curr_user": curr_user,
-        # "all_users": User.objects.filter(learnermodel__school=curr_user.learnermodel.school),
-        "all_users": User.objects.all(),
+        "all_users": User.objects.filter(learnermodel__school=curr_user.learnermodel.school),
         "completed_modules": completed_modules,
         'metrics': {
             m: core.defined_metrics[m].to_view(int(getattr(curr_learner_model, m + "_score")))
@@ -211,6 +209,7 @@ def expert_report(request, user_id):
 def school_report(request):
 
     curr_user = request.user
+    data = User.objects.filter(learnermodel__school=curr_user.learnermodel.school)
 
     def save_plot(fig):
         # save plot to image temporarily
@@ -223,11 +222,8 @@ def school_report(request):
 
         return html
 
-    def get_user_aggregate_plot():
-        # Read CSV into pandas
-        data = User.objects.all()
-        # data = User.objects.filter(learnermodel__school=curr_user.learnermodel.school)
-        
+    def get_user_aggregate_plot(data):
+
         # for each user, get percentage of completion and format into df
         data_list = []
         for user in data:
@@ -266,9 +262,7 @@ def school_report(request):
                         padding = 0,
                         label_type = 'center',
                         rotation = 'horizontal',) # color='grey'
-        ax.set_ylabel('Video Completions')
-        # ax.set_xlabel('user')
-        ax.set_xticks(xticks)
+        ax.set_ylabel('Completion Percentages')
         ax.set_xticklabels(df['user'].values, rotation = 90)
         ax.set_title('Percentage of Videos Completed by User')
         ax.legend(b, columns[1:])
@@ -286,10 +280,7 @@ def school_report(request):
         # save plot to image temporarily
         return save_plot(fig)
     
-    def get_user_topics_agg():
-        # Read CSV into pandas
-        data = User.objects.all()
-        # data = User.objects.filter(learnermodel__school=curr_user.learnermodel.school)
+    def get_user_topics_agg(data):
 
         # for each user, get percentage of completion and format into df
         agg_topics = {}
@@ -320,10 +311,41 @@ def school_report(request):
         # save plot to image temporarily
         return save_plot(fig)
 
+
+    # High level dashboard features, can be in the school dashboard for now (showing things like high-level struggles - through most watched content, or breakdown of competency levels) 
+
+    def get_modules_most_watched(data):
+        # get all modules completed by users in data
+        modules = ModuleCompletion.objects.filter(user__in=data)
+
+        # for each module, add the count the video's track title in video_count
+        video_count = {}
+        for module in modules:
+            if (not module.module.video.series): continue
+            if module.module.video.series.track.title in video_count:
+                video_count[module.module.video.series.track.title] += 1
+            else:
+                video_count[module.module.video.series.track.title] = 1
+        
+        # sort video_count by value
+        video_count = dict(sorted(video_count.items(), key=lambda item: item[1], reverse=True))
+
+        # plot the video_count dict into a pie chart
+        fig, ax = plt.subplots(figsize=(16, 9))
+        # convert 'plasma' colormap to list of colors
+        colors = plt.cm.get_cmap('plasma',5)
+        colors = [colors(i) for i in range(5)]
+        ax.pie(video_count.values(), labels=video_count.keys(), autopct='%1.1f%%', startangle=90, colors=colors)
+
+        return save_plot(fig)
+    
+
+
     context = {
         "curr_user": curr_user,
-        "agg_plot":get_user_aggregate_plot(),
-        "topics_plot":get_user_topics_agg(),
+        "agg_plot":get_user_aggregate_plot(data),
+        "topics_plot":get_user_topics_agg(data),
+        "watched_plot":get_modules_most_watched(data),
     }
     return render(request, "report_school.html", context)
 

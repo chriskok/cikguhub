@@ -11,9 +11,8 @@ class NewUserForm(UserCreationForm):
 	full_name = forms.CharField(label= "Nama Penuh / Full Name (As per NRIC)", required=True)
 
 	# list of all the schools in the existing LearnerModel objects
-	# schools = LearnerModel.objects.all().values_list('school', flat=True).distinct()
-	# schools = [(school, school) for school in schools if school]
-	schools = ["Tenby"]
+	schools = LearnerModel.objects.all().values_list('school', flat=True).distinct()
+	schools = [(school, school) for school in schools if school]
 
 	school = forms.ChoiceField(label= "Name sekolah / Name of School", choices = schools, widget=forms.RadioSelect)
 	school_level = forms.ChoiceField(label= "Anda mengajar di sekolah jenis? / Which school are you teaching in?", choices = (
