@@ -1,14 +1,20 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import *
 from django.core.exceptions import ValidationError
-
+from main.models import *
 
 # Create your forms here.
 
 class NewUserForm(UserCreationForm):
 	email = forms.EmailField(required=True)
 	full_name = forms.CharField(label= "Nama Penuh / Full Name (As per NRIC)", required=True)
+
+	# list of all the schools in the existing LearnerModel objects
+	schools = LearnerModel.objects.all().values_list('school', flat=True).distinct()
+	schools = [(school, school) for school in schools if school]
+
+	school = forms.ChoiceField(label= "Name sekolah / Name of School", choices = schools, widget=forms.RadioSelect)
 	school_level = forms.ChoiceField(label= "Anda mengajar di sekolah jenis? / Which school are you teaching in?", choices = (
 		("Sekolah Kebangsaan / National Primary School", "Sekolah Kebangsaan / National Primary School"),
 		("Sekolah Menengah Kebangsaan / National Secondary School", "Sekolah Menengah Kebangsaan / National Secondary School"),
@@ -39,7 +45,7 @@ class NewUserForm(UserCreationForm):
 
 	class Meta:
 		model = User
-		fields = ("username", "full_name", "email", "password1", "password2", "school_level", "years_of_experience")
+		fields = ("username", "full_name", "email", "password1", "password2", "school", "school_level", "years_of_experience")
 
 	def save(self, commit=True):
 		user = super(NewUserForm, self).save(commit=False)
