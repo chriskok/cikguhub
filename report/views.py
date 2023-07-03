@@ -225,7 +225,9 @@ def school_report(request):
 
     def get_user_aggregate_plot():
         # Read CSV into pandas
-        data = User.objects.filter(learnermodel__school=curr_user.learnermodel.school)
+        data = User.objects.all()
+        # data = User.objects.filter(learnermodel__school=curr_user.learnermodel.school)
+        
         # for each user, get percentage of completion and format into df
         data_list = []
         for user in data:
@@ -286,7 +288,9 @@ def school_report(request):
     
     def get_user_topics_agg():
         # Read CSV into pandas
-        data = User.objects.filter(learnermodel__school=curr_user.learnermodel.school)
+        data = User.objects.all()
+        # data = User.objects.filter(learnermodel__school=curr_user.learnermodel.school)
+
         # for each user, get percentage of completion and format into df
         agg_topics = {}
         for user in data:
