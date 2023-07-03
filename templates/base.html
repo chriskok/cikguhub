@@ -58,7 +58,7 @@
                                 <a class="dropdown-item" href="{% url 'recsys:user_recs' %}">User View</a>
                                 <a class="dropdown-item" href="{% url 'recsys:expert_recs' 0 %}">Expert View</a>
                                 <a class="dropdown-item" href="{% url 'recsys:all_activities' %}">All Activities</a>
-                                <a class="dropdown-item" href="{% url 'recsys:user_clustering' %}">User Clustering</a>
+                                {% comment %} <a class="dropdown-item" href="{% url 'recsys:user_clustering' %}">User Clustering</a> {% endcomment %}
                             </div>
                         </li>
                         <li class="nav-item dropdown">
@@ -81,9 +81,11 @@
                                 <a class="dropdown-item" href="{% url 'main:create_module' %}">Create Module</a>
                             </div>
                         </li> {% endcomment %}
+                        {% if user.username == "admin" %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
                         </li>
+                        {% endif %}
                     {% else %}
                         {% comment %} <li class="nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
                             <a class="nav-link" href="{% url 'recsys:user_recs' %}">Home<span class="sr-only">(current)</span></a>

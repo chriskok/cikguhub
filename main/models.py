@@ -29,6 +29,8 @@ class LearnerModel(models.Model):
     skill_interests = models.TextField(max_length=4096, null=True, blank=True)
     other_interests = models.TextField(max_length=4096, null=True, blank=True)
 
+    school = models.CharField(max_length=1024, null=True, blank=True)
+
     planner_score = models.FloatField(default=0.0)
     guardian_score = models.FloatField(default=0.0)
     mentor_score = models.FloatField(default=0.0)
@@ -42,7 +44,7 @@ class LearnerModel(models.Model):
 
     def __str__(self):
         return "{}. {}".format(str(self.id), self.user)
-
+    
 class Track(models.Model):
     title = models.CharField(max_length=4096)
 

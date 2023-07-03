@@ -161,7 +161,7 @@ def user_report(request, user_id=0):
         },
         'description': curr_feedback,
         'feedback_obj': Feedback.objects.filter(user=curr_learner_model.user).latest('id'),
-        "all_users": User.objects.all(),
+        "all_users": User.objects.filter(learnermodel__school=curr_user.learnermodel.school),
         "teaching_plot": produce_plot('teaching', curr_user),
         "leadership_plot": produce_plot('leadership', curr_user),
         "multimedia_plot": produce_plot('multimedia', curr_user),
@@ -189,7 +189,7 @@ def expert_report(request, user_id):
     context = {
         "learner_model": curr_learner_model,
         "curr_user": curr_user,
-        "all_users": User.objects.all(),
+        "all_users": User.objects.filter(learnermodel__school=curr_user.learnermodel.school),
         "completed_modules": completed_modules,
         'metrics': {
             m: core.defined_metrics[m].to_view(int(getattr(curr_learner_model, m + "_score")))
@@ -208,6 +208,8 @@ def expert_report(request, user_id):
 
 def school_report(request):
 
+    curr_user = request.user
+
     def save_plot(fig):
         # save plot to image temporarily
         tmpfile = BytesIO()
@@ -221,7 +223,7 @@ def school_report(request):
 
     def get_user_aggregate_plot():
         # Read CSV into pandas
-        data = User.objects.all()
+        data = User.objects.filter(learnermodel__school=curr_user.learnermodel.school)
         # for each user, get percentage of completion and format into df
         data_list = []
         for user in data:
@@ -282,7 +284,7 @@ def school_report(request):
     
     def get_user_topics_agg():
         # Read CSV into pandas
-        data = User.objects.all()
+        data = User.objects.filter(learnermodel__school=curr_user.learnermodel.school)
         # for each user, get percentage of completion and format into df
         agg_topics = {}
         for user in data:
@@ -313,6 +315,7 @@ def school_report(request):
         return save_plot(fig)
 
     context = {
+        "curr_user": curr_user,
         "agg_plot":get_user_aggregate_plot(),
         "topics_plot":get_user_topics_agg(),
     }
