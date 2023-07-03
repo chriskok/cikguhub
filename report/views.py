@@ -266,6 +266,7 @@ def school_report(request):
                         label_type = 'center',
                         rotation = 'horizontal',) # color='grey'
         ax.set_ylabel('Completion Percentages')
+        ax.set_xticks(xticks)
         ax.set_xticklabels(df['user'].values, rotation = 90)
         ax.set_title('Percentage of Videos Completed by User')
         ax.legend(b, columns[1:])
