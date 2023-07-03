@@ -236,7 +236,8 @@ def user_recs(request, user_id=0):
     else:
         context = {"series": None, "module": None, "series2": None, "module2": None, "completed_modules": []}
 
-    context['all_users'] = User.objects.filter(learnermodel__school=curr_user.learnermodel.school)
+    # context['all_users'] = User.objects.filter(learnermodel__school=curr_user.learnermodel.school)
+    context['all_users'] = User.objects.all()
     return render(request, "recs.html", context=context)
 
 def produce_feedback(user):
@@ -292,7 +293,8 @@ def expert_recs(request, user_id):
     recommended_series = Series.objects.filter(id__in=list_of_ids).order_by(preserved)
 
     # filter users by school (match the same school name as curr_user)
-    same_school_users = User.objects.filter(learnermodel__school=curr_user.learnermodel.school)
+    same_school_users = User.objects.all()
+    # same_school_users = User.objects.filter(learnermodel__school=curr_user.learnermodel.school)
 
     context = {"series": recommended_series, "curr_user": curr_user, "all_users": same_school_users}
     return render(request, "recs_expert.html", context=context)
