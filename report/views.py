@@ -7,6 +7,8 @@ from django.contrib import messages
 from django.db.models import Avg
 from main.models import *
 import datetime
+import warnings
+warnings.filterwarnings("ignore")
 
 # dashboard libraries
 from math import pi
