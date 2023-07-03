@@ -4,6 +4,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
+from django.db.models import Avg
 from main.models import *
 import datetime
 
@@ -311,9 +312,6 @@ def school_report(request):
         # save plot to image temporarily
         return save_plot(fig)
 
-
-    # High level dashboard features, can be in the school dashboard for now (showing things like high-level struggles - through most watched content, or breakdown of competency levels) 
-
     def get_modules_most_watched(data):
         # get all modules completed by users in data
         modules = ModuleCompletion.objects.filter(user__in=data)
@@ -336,16 +334,41 @@ def school_report(request):
         colors = plt.cm.get_cmap('plasma',5)
         colors = [colors(i) for i in range(5)]
         ax.pie(video_count.values(), labels=video_count.keys(), autopct='%1.1f%%', startangle=90, colors=colors)
+        ax.set_title('Percentages of Modules Completed by Track')
 
         return save_plot(fig)
     
+    def get_agg_competency_scores(data):
+        # get all learner models in data
+        learner_models = LearnerModel.objects.filter(user__in=data)
 
+        # get average scores of all learner models in dictionary
+        avg_scores = {
+            'Planner Score': learner_models.aggregate(Avg('planner_score'))['planner_score__avg'],
+            'Guardian Score': learner_models.aggregate(Avg('guardian_score'))['guardian_score__avg'],
+            'Mentor Score': learner_models.aggregate(Avg('mentor_score'))['mentor_score__avg'],
+            'Motivator Score': learner_models.aggregate(Avg('motivator_score'))['motivator_score__avg'],
+            'Assessor Score': learner_models.aggregate(Avg('assessor_score'))['assessor_score__avg'],
+        }
 
+        # plot the avg_scores dict into a bar chart
+        fig, ax = plt.subplots(figsize=(16, 9))
+        ax.bar(avg_scores.keys(), avg_scores.values(), color="#6a00a8")
+        ax.set_title('Average Competency Scores')
+        ax.set_ylabel('Score')
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.spines['bottom'].set_visible(False)
+        ax.spines['left'].set_visible(False)
+
+        return save_plot(fig)
+            
     context = {
         "curr_user": curr_user,
         "agg_plot":get_user_aggregate_plot(data),
         "topics_plot":get_user_topics_agg(data),
         "watched_plot":get_modules_most_watched(data),
+        "competency_plot":get_agg_competency_scores(data),
     }
     return render(request, "report_school.html", context)
 
