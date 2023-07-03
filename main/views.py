@@ -36,6 +36,7 @@ def register_request(request):
             try:
                 lm, created = LearnerModel.objects.get_or_create(user=user, 
                     full_name=form.cleaned_data['full_name'],
+                    school = form.cleaned_data['school'],
                     school_level = form.cleaned_data['school_level'],
                     years_of_experience = years_of_experience,
                     role = ','.join(form.cleaned_data['role']),
